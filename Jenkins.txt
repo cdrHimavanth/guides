@@ -1,0 +1,11 @@
+FIrst we need to have jenkins.war file
+and to run it we require java 11 as minimum 
+but we may have different version set in environment variables
+so we open terminal and use set PATH=urpath;%PATH% to set path for that terminal
+after that run using java -jar name.war --httpPort=9090 some port u desire to run it on or it will take default port
+
+
+it will give a default admin password in teminal initially
+we open in localhost and login with pass from terminal 
+cerate a new admin user and enjoy
+*****************************************************************
