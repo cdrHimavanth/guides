@@ -1,0 +1,55 @@
+<div class="flex flex-col bg-slate-300 flex-auto min-w-0">
+  <!-- Header -->
+  <div class="flex items-center justify-between pl-5  pr-5 w-full">
+    <button class="back-button" matTooltip="Go Back" matTooltipPosition="right" (click)="onBack()"
+      (mouseleave)="isHoveredBackBtn = false" (mouseenter)="isHoveredBackBtn = true">
+      <mat-icon svgIcon="arrow_back" [ngStyle]="{'color': isHoveredBackBtn ? 'white' : 'black'}"></mat-icon>
+    </button>
+    <h2 class="text-3xl font-semibold tracking-tight pt-2 leading-8">
+      HR Reports
+    </h2>
+    <div class="flex items-center w-44 h-8 mb-1">
+
+      <mat-form-field class="mr-2 w-44 h-8" appearance="outline">
+        <mat-select [formControl]="recruiterFilter">
+          <mat-option value="RecruiterDetails">
+            Recruiter Details
+          </mat-option>
+          <mat-option value="PositionBySkillGroup">Position By Skill Group</mat-option>
+          <mat-option value="OrderBids">Order Bids </mat-option>
+          <mat-option value="PositionByMonth">
+            Position By Month
+          </mat-option>
+          <mat-option value="AllOrdersByMonth">
+            All Orders By Month
+          </mat-option>
+
+          <!-- <mat-option value="AttemptedPositionsInfo">
+                Attempted Positions Info
+              </mat-option> -->
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div [ngSwitch]="recruiterFilter.value">
+    <div *ngSwitchCase="'RecruiterDetails'">
+      <app-recruiterassignmentdetails></app-recruiterassignmentdetails>
+    </div>
+    <div *ngSwitchCase="'PositionBySkillGroup'">
+      <app-positionsbyskill></app-positionsbyskill>
+    </div>
+    <div *ngSwitchCase="'OrderBids'">
+      <app-activebids></app-activebids>
+    </div>
+    <div *ngSwitchCase="'PositionByMonth'">
+      <app-positionbymonth></app-positionbymonth>
+    </div>
+    <div *ngSwitchCase="'AllOrdersByMonth'">
+      <app-allordersbymonth></app-allordersbymonth>
+    </div>
+
+    <!-- <div *ngSwitchCase="'AttemptedPositionsInfo'">
+      <app-attempted-positions-info></app-attempted-positions-info>
+    </div> -->
+  </div>
+</div>

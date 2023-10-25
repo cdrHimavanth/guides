@@ -1,0 +1,105 @@
+// ::ng-deep .mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex{
+//     width: 16rem;
+// }
+
+// ::ng-deep .mat-form-field {
+//     display: flex;
+//     justify-content: flex-end;
+// }
+
+// ::ng-deep .input-width{
+//     width: 16rem;
+// }
+
+::ng-deep .mat-form-width{
+    width:11rem Im !important;
+}
+
+::ng-deep .prose :where(thead th):not(:where([class~="not-prose"] *)) {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.direction-flex{
+  justify-content: space-between !important;
+}
+
+::ng-deep .prose :where(tbody td):not(:where([class~="not-prose"] *)) {
+  vertical-align: middle;
+}
+
+::ng-deep .prose :where(table):not(:where([class~="not-prose"] *)){
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+::ng-deep th.mat-header-cell{
+  text-align: center !important;
+}
+
+th{ 
+  color: white !important;
+  font-size:13px;
+   background-color: #1e293b;
+ }
+
+ ::ng-deep .mat-focused{
+  border-color: #1e293b;
+ }
+
+
+::ng-deep .mat-form-field-label{
+  color: rgb(15, 15, 15) !important;
+  font-weight: 500 !important;
+  caret-color: #1e293b !important;
+}
+
+::ng-deep .mat-sort-header-container {
+  justify-content: center;
+}
+
+::ng-deep .mat-sort-header-stem{
+  color: azure;
+}
+
+::ng-deep .mat-sort-header-pointer-left{
+  color: azure;
+}
+
+::ng-deep .mat-sort-header-pointer-right{
+  color: azure;
+}
+
+
+
+::ng-deep .mat-sort-header-indicator{
+  color: azure;
+}
+
+::ng-deep .mat-form-field-wrapper{
+  padding-bottom: 0px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+::ng-deep .mat-select-panel{
+  min-width: calc(100% + 3px) !important;
+}
+
+.back-button{
+  border-radius: 100px;
+  width: 36px;
+  height: 35px;
+  padding: 3px;
+  text-align: center;
+}
+
+.back-button:hover{
+  background-color: #1e293b;
+  border-radius: 100px;
+  width: 36px;
+  height: 35px;
+  padding: 3px;
+  text-align: center;
+}

@@ -1,0 +1,172 @@
+<div class="p-3" *ngIf="bidInfoDetails != null">
+    <!-- header  -->
+    <mat-card class="card flex items-center justify-between w-full">
+        <div class="font-bold text-lg flex flex-col items-start">
+            <p> {{ bidInfoDetails.bidName}}</p>
+            <div class="flex">
+                <div *ngIf="bidInfoDetails.bidActiveStatus" class="flex items-center justify-center pl-3 pr-3 pt-1 pb-1 rounded-full leading-normal text-green-500 bg-green-100 dark:text-green-300 dark:bg-green-700 ng-star-inserted" mat-flat-button>
+                    <span class="text-sm font-medium whitespace-nowrap">Active</span>
+                </div>
+                <div *ngIf="!bidInfoDetails.bidActiveStatus" class="flex items-center justify-center pl-3 pr-3 pt-1 pb-1 rounded-full leading-normal text-red-500 bg-red-100 dark:text-red-300 dark:bg-red-700 ng-star-inserted" mat-flat-button>
+                    <span class="text-sm font-medium whitespace-nowrap">Closed</span>
+                </div>
+                <div *ngIf="bidInfoDetails.bidStatus != null" class="ml-2 flex items-center justify-center pl-3 pr-3 pt-1 pb-1 rounded-full leading-normal text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700 ng-star-inserted" mat-flat-button>
+                    <span class="text-sm font-medium whitespace-nowrap">{{
+            bidInfoDetails.bidStatus
+          }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex">
+            <a class="ml-2" mat-icon-button (click)="changeDisplayMode()">
+                <mat-icon *ngIf="!isEditable" matTooltip="Edit" [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
+                <mat-icon *ngIf="isEditable" matTooltip="View" [svgIcon]="'heroicons_outline:eye'"></mat-icon>
+            </a>
+            <!-- Cancel button -->
+            <a class="ml-2" mat-icon-button (click)="closeDrawer()" matTooltip="Cancel">
+                <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+            </a>
+        </div>
+    </mat-card>
+
+    <form [formGroup]="bidInfoEditDetailsForm">
+        <div class="grid grid-cols-2 gap-2 pt-2">
+            <div class="flex" *ngIf="bidInfoDetails.orderNo !== null">
+                <p class="font-bold">Order Number :</p>
+                <p class="pl-2">{{ bidInfoDetails.orderNo }}</p>
+            </div>
+            
+            <div class="flex" *ngIf="bidInfoDetails.bidNo !== null">
+                <p class="font-bold">Bid Number :</p>
+                <p class="pl-2">{{ bidInfoDetails.bidNo }}</p>
+            </div>
+            <div class="flex " *ngIf="bidInfoDetails.bidReceivedDate !== null">
+                <p class="font-bold">Bid Received Date :</p>
+                <p class="pl-2">
+                    {{ bidInfoDetails.bidReceivedDate | date : "mediumDate" }}
+                </p>
+            </div>
+
+            <div class="flex" *ngIf="!isEditable && bidInfoDetails.bidOverTarget !== null">
+                <p class="font-bold">Over target :</p>
+                <p class="pl-2">{{ bidInfoDetails.bidOverTarget ? "Yes" : bidInfoDetails.bidOverTarget == false? "No": null }}</p>
+            </div>
+
+            <div class="flex" *ngIf="!isEditable && bidInfoDetails.bidExternalOrInternal !== null">
+                <p class="font-bold"> External or Internal :</p>
+                <p class="pl-2">{{ bidInfoDetails.bidExternalOrInternal }}</p>
+            </div>
+
+            <div class="flex" *ngIf="!isEditable && bidInfoDetails.bidSkillSet !== null">
+                <p class="font-bold">Skill set : </p>
+                <p class="pl-2">{{ bidInfoDetails.bidSkillSet }}</p>
+            </div>
+
+            <div class="col-span-2 w-full" *ngIf="!isEditable">
+
+                <p class="font-bold inline">Interview Details :</p>
+                <button [disabled]="!bidInfoComponentRef.isChecked" (click)="scheduleInterviewDate()" class="block pl-3 pr-3 pt-1 pb-1 m-1 rounded-full leading-normal text-blue-500 bg-blue-100 dark:text-blue-300 dark:bg-blue-700 ng-star-inserted" mat-flat-button>
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="ml-1 text-sm font-medium whitespace-nowrap"> Schedule Interview </span>
+                </button>
+
+                <div formArrayName="interviewDates">
+                    <table *ngIf="bidInfoEditDetailsForm.value.interviewDates.length != 0" class="w-full mat-elevation-z8 mt-2 mb-2" aria-describedby="interviewTable" mat-table [dataSource]="dataSource">
+
+                        <!-- Interview Date Column -->
+                        <ng-container matColumnDef="interviewDate">
+                            <th mat-header-cell *matHeaderCellDef> Interview Date </th>
+                            <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                            <mat-form-field [appearance]="bidInfoEditDetailsForm.get('interviewDates').value[i].isEditable ? 'none' : 'legacy'">
+                                <input *ngIf = "!bidInfoEditDetailsForm.get('interviewDates').value[i].isEditable"
+                                 matInput type="datetime-local" formControlName="interviewDate"
+                                         [readonly]="bidInfoEditDetailsForm.get('interviewDates').value[i].isEditable">
+                                <input *ngIf = "bidInfoEditDetailsForm.get('interviewDates').value[i].isEditable"
+                                matInput type = "text" [value]="transformDate(bidInfoEditDetailsForm.get('interviewDates').value[i].interviewDate)">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+
+                        <!-- Interview Result  Column -->
+                        <ng-container matColumnDef="interviewResult">
+
+                            <th mat-header-cell *matHeaderCellDef> Interview Result </th>
+                            <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                                <mat-form-field [appearance]="bidInfoEditDetailsForm.get('interviewDates').value[i].isEditable? 'none' : 'legacy'">
+                                    <input placeholder="Interview result" matInput type="text" formControlName="interviewResult" [readonly]="bidInfoEditDetailsForm.get('interviewDates').value[i].isEditable">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+
+                        <!-- Action Column -->
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> Action </th>
+                            <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+
+                                <div class="flex align-center">
+                                    <button (click)=" editInterviewDate(bidInfoEditDetailsForm,i)" mat-icon-button class="material-icons app-toolbar-menu save-button" *ngIf="bidInfoEditDetailsForm.get('interviewDates').value[i].isEditable" matTooltip="Edit" color="primary">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button (click)="saveInterviewDate(bidInfoEditDetailsForm,i)" mat-icon-button class="material-icons app-toolbar-menu save-button" matTooltip="Save Changes" *ngIf="!bidInfoEditDetailsForm.get('interviewDates').value[i].isEditable" color="primary">
+                                        <mat-icon>check_circle</mat-icon>
+                                    </button>
+                                    <button (click)=" removeInterviewDate(i) " *ngIf="!bidInfoEditDetailsForm.get('interviewDates').value[i].interviewId" mat-icon-button class="material-icons app-toolbar-menu cancel-button" matTooltip="Cancel Changes" color="warn">
+                                        <mat-icon>cancel</mat-icon>
+                                    </button>
+                                </div>
+
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="flex" *ngIf="!isEditable && bidInfoDetails.bidStatus == 'Shortlisted'">
+                <p class="font-bold">PO Number :</p>
+                <p class="pl-2">{{ bidInfoDetails.bidPoNumber }}</p>
+            </div>
+
+            <!-- Over Target  -->
+            <mat-form-field *ngIf="isEditable" appearance="outline">
+                <mat-label>Over Target</mat-label>
+                <mat-select [disabled]="!bidInfoComponentRef.isChecked" formControlName="overTarget" [errorStateMatcher]="matcher">
+                    <mat-option value=true>Yes</mat-option>
+                    <mat-option value=false>No</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Skill Set  -->
+            <mat-form-field *ngIf="isEditable" appearance="outline">
+                <mat-label>Skill Set</mat-label>
+                <input [readonly]="!bidInfoComponentRef.isChecked" type="text" matInput formControlName="bidSkillSet" placeholder="Enter skill set" />
+            </mat-form-field>
+
+            <!-- PO Number  -->
+            <mat-form-field *ngIf="isEditable" appearance="outline">
+                <mat-label>PO Number</mat-label>
+                <input [readonly]="!bidInfoComponentRef.isChecked" type="text" matInput formControlName="poNumber" placeholder="Enter PO number" />
+            </mat-form-field>
+
+            <!-- Bid External Or Internal -->
+            <div *ngIf="isEditable">
+                <mat-radio-group [disabled]="!bidInfoComponentRef.isChecked" formControlName="bidExternalOrInternal">
+                    <mat-radio-button class="example-radio-button" value="External">External</mat-radio-button>
+                    <mat-radio-button class="example-radio-button" value="Internal">Internal</mat-radio-button>
+                </mat-radio-group>
+            </div>
+
+        </div>
+        <div *ngIf="isEditable" class="flex flex-row justify-end items-center">
+            <button class="m-3" mat-stroked-button (click)="changeDisplayMode()">
+        <span class="ml-2 mr-1">Cancel</span>
+      </button>
+            <button [disabled]="!bidInfoComponentRef.isChecked" *ngIf="isEditable" (click)="saveBidInfoDetails()" type="submit" class="text-white bg-[#1e293b] mr-2" mat-flat-button color="success">
+        <span class="ml-2 mr-1">Save</span>
+      </button>
+        </div>
+    </form>
+</div>

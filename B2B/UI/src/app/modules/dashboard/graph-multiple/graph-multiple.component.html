@@ -1,0 +1,52 @@
+<button
+  (click)="updateOptions('1W')"
+  [class.active]="activeOptionButton == '1W'"
+>
+  Week
+</button>
+<button
+  (click)="updateOptions('1M')"
+  [class.active]="activeOptionButton == '1M'"
+>
+  Month
+</button>
+<button
+  (click)="updateOptions('3M')"
+  [class.active]="activeOptionButton == '3M'"
+>
+  Quarter
+</button>
+<button
+  (click)="updateOptions('1Y')"
+  [class.active]="activeOptionButton == '1Y'"
+>
+  Year
+</button>
+
+<select class="select" (change)="updateChartOption($event.target.value)">
+  <option value="orders">Orders</option>
+  <option value="positions">Positions</option>
+  <option value="bids">Bids</option>
+</select>
+<select class="select" (change)="updateChartToggle($event.target.value)">
+  <option value="open">Open</option>
+  <option value="close">Close</option>
+  <option value="all">All</option>
+</select>
+<apx-chart
+  #chart
+  [series]="chartOptions.series"
+  [chart]="chartOptions.chart"
+  [colors]="chartOptions.colors"
+  [yaxis]="chartOptions.yaxis"
+  [dataLabels]="chartOptions.dataLabels"
+  [markers]="chartOptions.markers"
+  [stroke]="chartOptions.stroke"
+  [grid]="chartOptions.grid"
+  [xaxis]="chartOptions.xaxis"
+  [tooltip]="chartOptions.tooltip"
+  [annotations]="chartOptions.annotations"
+></apx-chart>
+<div class="graph-display">
+  {{ display }}
+</div>

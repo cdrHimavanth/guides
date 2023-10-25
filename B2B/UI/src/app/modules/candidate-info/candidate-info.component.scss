@@ -1,0 +1,59 @@
+.mat-header-cell {
+    color: white !important;
+    font-size: 13px;
+    background-color: #1e293b;
+    position: sticky;
+    top: 0;
+    min-width: 100px;
+    max-width: 200px;
+    text-align: center !important;
+    padding: 5px;
+}
+
+
+.mat-column-declinedReason {
+    min-width: 200px !important;
+}
+
+.mat-cell {
+    text-align: center !important;
+    min-width: 100px;
+    max-width: 200px;
+}
+
+.mat-cell,
+.mat-footer-cell {
+    font-size: 13px;
+    padding: 5px;
+}
+
+.not-found-container {
+    width: 50%;
+}
+
+.container {
+    max-height: 60vh;
+    overflow: auto;
+}
+
+::ng-deep .mat-sort-header-container {
+    display: flex;
+    justify-content: center;
+}
+
+.back-button {
+    border-radius: 100px;
+    width: 36px;
+    height: 35px;
+    padding: 3px;
+    text-align: center;
+}
+
+.back-button:hover {
+    background-color: #1e293b;
+    border-radius: 100px;
+    width: 36px;
+    height: 35px;
+    padding: 3px;
+    text-align: center;
+}

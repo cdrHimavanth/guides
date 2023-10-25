@@ -1,0 +1,70 @@
+p {
+    margin: 3px;
+}
+
+.mat-flat-button {
+    color: white !important;
+    background-color: #1e293b !important;
+  cursor: pointer;
+
+}
+
+.example-full-width {
+    width: 100%;
+    color: black
+}
+
+.example-radio-button {
+    margin: 0 5px;
+}
+
+::ng-deep .mat-form-field-label {
+    color: rgb(15, 15, 15) !important;
+    font-weight: 500 !important;
+    caret-color: #1e293b !important;
+}
+
+.detail {
+    font-size: 12px;
+    padding-top: 3px
+}
+
+.positions-upload-field{
+    padding: 15px;
+}
+
+.upload-position-title{
+    color: #1e293b ;
+    font-weight: bold;
+}
+
+/* Style the custom file input container */
+.file-input-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+  
+  /* Style the custom button */
+  .custom-file-input {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: transparent;
+    border-radius: 5px;
+    border: 1px solid #1e293b;
+    color: black;
+    cursor: pointer;
+  }
+
+  .custom-file-input:hover{
+    background-color: #1e293b;
+    color: #ffffff;
+  }
+  /* Hide the default file input */
+  .custom-file-input input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+  }

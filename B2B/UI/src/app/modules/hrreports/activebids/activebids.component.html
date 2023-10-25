@@ -1,0 +1,146 @@
+<mat-card class="m-auto w-9/12 mt-5 p-5 flex items-center justify-center bg-card"
+  *ngIf="dataSource && dataSource.data && dataSource.data.length==0">
+  <img class="not-found-container" src="../../../assets/images/custom/no-data-found.png" alt="No data found" />
+</mat-card>
+<div class="flex flex-col mt-2 flex-auto min-w-0" *ngIf="dataSource && dataSource.data && dataSource.data.length > 0">
+  <div
+    class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between pl-6 pr-6 sm:px-10 dark:bg-transparent">
+    <div class="flex-1 min-w-0">
+      <!-- Title -->
+      <div class="mt-2 mb-2">
+        <h1 class="font-semibold tracking-tight">
+          Order Bids
+        </h1>
+      </div>
+    </div>
+
+    <div class="max-w-full search-bar">
+      <mat-form-field class="flex justify-end full-width" appearance="outline">
+        <input [formControl]="searchControl" placeholder="Search" matInput [type]="'overallSearch'"
+          (input)="applyFilter()" />
+        <!-- <mat-icon class="ml-5" [svgIcon]="'heroicons_outline:search'"></mat-icon> -->
+      </mat-form-field>
+    </div>
+
+  </div>
+  <div class="flex-auto pb-3 pl-6 pr-6 sm:pl-10 sm:pr-10">
+    <div class="max-w-full prose prose-sm " [ngClass]="{'disabled': isRightCanvasOpen}">
+
+      <div class="mat-elevation-z8 container">
+        <table mat-table [dataSource]="dataSource" matSort class="text-center" >
+          <!-- Order Number Column -->
+          <ng-container matColumnDef="orderNo">
+            <th class="tbl-headers" mat-header-cell *matHeaderCellDef mat-sort-header>
+              Order Number
+            </th>
+            <td mat-cell *matCellDef="let row" class="p-4" >
+              <button
+                class="outline outline-offset-2 outline-1 rounded-lg p-2 group hover:rounded-lg hover:bg-[#1E293B] hover:text-white"
+                matTooltip="Click To View Details" (click)="viewName(row.orderNo,row.bidNameList)">{{ row.orderNo
+                }}</button>
+            </td>
+
+            <!-- <td mat-cell *matCellDef="let row"  class="flex justify-center border-none"> -->
+            <!-- #enddocregion basic-panel -->
+            <!-- <mat-expansion-panel (opened)="panelOpenState = true"  class="shadow-none w-30"
+                (closed)="panelOpenState = false">
+                <mat-expansion-panel-header class="dark-icon"> 
+                  <mat-panel-title>
+                  {{ row.orderNo }}
+                  </mat-panel-title>
+              </mat-expansion-panel-header>
+              <ng-container *ngFor="let name of row.bidNameList">
+                <p>{{ name }}</p>
+              </ng-container>
+              </mat-expansion-panel>
+              </td> -->
+          </ng-container>
+
+          <!-- count Of Profile Submitted Name Column -->
+          <ng-container matColumnDef="countOfProfile">
+            <th class="tbl-headers" mat-header-cell *matHeaderCellDef mat-sort-header>
+              Count Of Profile <br /> Submitted
+            </th>
+            <td mat-cell *matCellDef="let row" >{{ row.countOfProfile }}</td>
+          </ng-container>
+
+          <!-- Stratification Column -->
+          <ng-container matColumnDef="stratification">
+            <th class="tbl-headers" mat-header-cell *matHeaderCellDef mat-sort-header>
+              Stratification
+            </th>
+            <td class="cursor-pointer max-w-50 min-w-50" mat-cell *matCellDef="let row" matTooltip="{{row.ordStratification
+            }}">
+              <ng-container *ngIf="row.ordStratification
+
+              ; else ordStratificationDash">{{row.ordStratification
+
+                | truncate:50 }}</ng-container>
+              <ng-template #ordStratificationDash>-</ng-template>
+            </td>
+          </ng-container>
+
+          <!-- Skill Group Column -->
+          <ng-container matColumnDef="skillGroup">
+            <th class="tbl-headers" mat-header-cell *matHeaderCellDef mat-sort-header>Skill Group</th>
+            <td class="cursor-pointer" mat-cell *matCellDef="let row" matTooltip="{{row.ordSkillGroup
+            }}" >
+              <ng-container *ngIf="row.ordSkillGroup
+
+              ; else dash">{{row.ordSkillGroup
+
+                | truncate:25 }}</ng-container>
+              <ng-template #dash>-</ng-template>
+            </td>
+          </ng-container>
+
+          <!-- Primary Skill Column -->
+          <ng-container matColumnDef="primarySkill">
+            <th class="tbl-headers" mat-header-cell *matHeaderCellDef mat-sort-header>
+              Primary Skill
+            </th>
+            <td  mat-cell *matCellDef="let row" matTooltip="{{ row.ordPreferredSkill}}" class="cursor-pointer p-3 max-w-61 min-w-62">
+              <ng-container *ngIf="row.ordPreferredSkill
+
+
+              ; else dashPrefSkill">{{row.ordPreferredSkill
+
+
+                | truncate:280 }}</ng-container>
+              <ng-template #dashPrefSkill>-</ng-template>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky top-0"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">
+              No data matching the filter "{{ searchControl.value }}"
+            </td>
+          </tr>
+        </table>
+      </div>
+      <mat-paginator [pageSizeOptions]="[10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+
+    </div>
+    <div
+    class="fixed inset-y-0 right-0 w-80 bg-gray-200 shadow transform translate-x-full ease-in-out transition duration-300 p-5"
+    [class.translate-x-0]="isRightCanvasOpen" [class.translate-x-full]="!isRightCanvasOpen">
+    <div class="mt-6 flex flex-row">
+      <a mat-icon-button (click)="toggleOffcanvas()" [matTooltip]="'Close'" matTooltipPosition="left"
+        class="mt-6 ml-auto">
+        <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+      </a>
+    </div>
+    <h3 class="font-semibold" >Bid Names</h3>
+    <ul *ngFor="let name of namesList; let i = index" [ngStyle]="{ 'background-color': backgroundColors[i] }"
+      class="text-white font-bold rounded-md">
+      <li class="m-2 p-1 rounded-lg">{{ name }}</li>
+    </ul>
+  </div>
+  
+
+  </div>
+</div>

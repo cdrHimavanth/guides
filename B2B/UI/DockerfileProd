@@ -1,0 +1,10 @@
+FROM nginx:alpine
+
+COPY www /usr/share/nginx/html
+
+# Copy the custom NGINX configuration file
+COPY nginx-prod.conf /etc/nginx/nginx.conf
+
+EXPOSE 4202
+
+CMD ["nginx", "-g", "daemon off;"]

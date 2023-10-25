@@ -1,0 +1,226 @@
+<fuse-alert class=" mb-2 mr-7 ml-7 w-6/6"  [appearance]="'outline'"
+	[showIcon]="true" [type]="'warning'" *ngIf = "ordersData != null && ordersData != [] && ordersData !=''">
+	<p>Need to add these orders</p>
+	{{ordersData}}
+	<!-- {{ordersData.split(',').join(', ')}} -->
+</fuse-alert>
+<mat-card class="m-auto w-9/12 mt-5 pl-5 pr-5 pb-5 flex items-center justify-center"*ngIf="unknownErrorOcuured">
+	<div class="flex flex-col">
+		<div>
+			<img class="not-found-container" src=""
+			alt="Something went wrong" />
+		</div>
+		<div>
+			<button class="m-3 button" mat-flat-button (click)="backToUpload()">
+				<span class="ml-2 mr-1">Back to Upload</span>
+			</button>
+		</div>
+	</div>				
+</mat-card>
+<!---------------------------------------------------------------------------->
+<div class="pdf-upload " id="pdfBlock" *ngIf="!isPdfUploaded && !uploadClicked" >
+	<h1 class="font-medium tracking-tight text-secondary  ml-7">Pdf Uploads </h1>
+	<div class="upload-container mt-3 bg-card" appDnd (fileDropped)="onFileDroppedPdf($event)">
+		<div class="flex flex-col items-center ">
+			<div class="text-center">
+				<input type="file" #fileDropRef  class="input1" id="fileDropRef" multiple
+					(change)="fileBrowseHandlerPdf($event.target.files)" accept=".pdf"  />
+				<mat-icon class="upload-icon" svgIcon="heroicons_outline:upload"></mat-icon>
+			</div>
+			<div class="mt-2">
+				<h3 class="h3">Drag and drop Pdf file here</h3>
+			</div>
+			<div class="mt-2">
+				<h3 class="h3">or</h3>
+			</div>
+			<div class="mt-2">
+				<label class="label1" for="fileDropRef">Browse for file</label>
+			</div>
+			<div class="mt-2">
+				<p class="font-medium tracking-tight text-secondary">*Note: Please upload only pdf files </p>
+			</div>
+		</div>
+	</div>
+	<div class="m-3">
+		<fuse-alert class="mt-8 -mb-4 w-full text-center" *ngIf="showAlertPdf" [appearance]="'outline'"
+			[showIcon]="false" [type]="alert.type" [dismissible]="true" [dismissed]="false">
+			{{alert.message}}
+		</fuse-alert>
+	</div>
+	<div class="files-list">
+		<div class="single-file" *ngFor="let file of files; let i = index">
+			<div class="file-icon">
+				<mat-icon class="doc-icon" svgIcon="heroicons_outline:document-text"></mat-icon>
+			</div>
+			<div class="info">
+				<h4 class="name">
+					{{ file?.name }}
+				</h4>
+				<p class="size">
+					{{ formatBytes(file?.size) }}
+				</p>
+			</div>
+
+			<div class="delete display-none" (click)="deleteFilePdf(i)">
+
+				<mat-icon class="delete-icon display-none" svgIcon="heroicons_outline:trash"></mat-icon>
+
+			</div>
+		</div>
+	</div>
+	<div class="flex flex-row justify-center p-6">
+
+		<button class="m-3 reset-button" mat-stroked-button (click)="resetButton()" id="pdfResetBtn"
+			[disabled]="files.length==0">
+			<span class="ml-2 mr-1">Reset</span>
+		</button>
+
+		<button class="m-3 button" mat-flat-button (click)="pdfUpload()" id="pdfUploadBtn" [disabled]="files.length==0">
+			<span class="ml-2 mr-1">Upload</span>
+		</button>
+	</div>
+</div>
+
+<!---------------------------------------------Success Msg---------------------------------------------------------------->
+<div *ngIf ="uploadClicked">
+<br>
+<mat-card class=" mb-2 mr-7 ml-7 w-65" *ngIf="fileInfos.length !=0">
+	<mat-card-content>
+		<!-- <table class="table" *ngFor="let file of fileInfos" mat-table matSort aria-label="Uploaded PDF Data"> -->
+
+		 <table class="table"  aria-label="Uploaded PDF Data" *ngIf="fileInfos.length !=0">
+			<tr>
+			  <th class="table-header">File Name</th>
+			  <th  class="table-header">Status</th>
+			  <th  class="table-header">Icon</th>
+			</tr>
+			<tr *ngFor="let file of fileInfos">
+			  <td *ngIf="file.fileName != null"> {{file.fileName}} </td>
+			  <td *ngIf="file.status != null "> {{file.status}} </td>
+			  <td *ngIf="file.icon != null "> 					
+				<ng-container *ngIf="file.icon === 'Uploaded' else temp">
+					<mat-icon [matTooltip]="'Uploaded'" matTooltipPosition="left"  svgIcon="heroicons_solid:check-circle" class="text-green-500"></mat-icon>
+				</ng-container>
+				<ng-template #temp>
+					<mat-icon [matTooltip]="'Rejected'" svgIcon="heroicons_solid:x-circle"
+						matTooltipPosition="left" class="text-red-500"></mat-icon>
+				</ng-template>  
+			</td>
+			</tr>
+			</table> 
+		<!-- <table class="table" *ngFor="let file of fileInfos" mat-table matSort aria-label="Uploaded PDF Data">
+			<!-- FileName --
+			<ng-container matColumnDef="fileName">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">File Name </th>
+				<td >
+					<ng-container *ngIf="file.fileName != null else temp">
+						{{ file.fileName }}   
+					</ng-container>
+					<ng-template #temp>
+						-
+					</ng-template>
+				</td>
+			</ng-container>
+			<!-- Status --
+			<ng-container matColumnDef="status">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header"> Status </th>
+				<td >
+					<ng-container *ngIf="file.status != null else temp"> {{file.status}} </ng-container>
+					<ng-template #temp>
+						-
+					</ng-template>
+	
+				</td>
+			</ng-container>
+			<!-- Icon --
+			<ng-container matColumnDef="icon">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header"></th>
+				<td >
+					<ng-container *ngIf="file.icon === 'Uploaded' else temp">
+						<mat-icon [matTooltip]="'Uploaded'" matTooltipPosition="left"  svgIcon="heroicons_solid:check-circle" class="text-green-500"></mat-icon>
+					</ng-container>
+					<ng-template #temp>
+						<mat-icon [matTooltip]="'Rejected'" svgIcon="heroicons_solid:x-circle"
+							matTooltipPosition="left" class="text-red-500"></mat-icon>
+					</ng-template>
+				</td>
+			</ng-container>
+			<!-- <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky top-0"></tr> -->
+			<!-- <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr> -->
+		<!--
+		<div class="flex flex-row justify-center" *ngFor="let file of fileInfos">
+			<div class="flex flex-row">
+				<h4 class="name">
+					{{ file.fileName }}
+				</h4> 
+				<p class="status">
+				   {{file.status}} 
+				</p>
+				<div class="icon">
+					<ng-container *ngIf="file.icon === 'Uploaded' else temp">
+						<mat-icon [matTooltip]="'Uploaded'" matTooltipPosition="left"  svgIcon="heroicons_solid:check-circle" class="text-green-500"></mat-icon>
+					</ng-container>
+					<ng-template #temp>
+						<mat-icon [matTooltip]="'Rejected'" svgIcon="heroicons_solid:x-circle"
+							matTooltipPosition="left" class="text-red-500"></mat-icon>
+					</ng-template>
+				</div>
+				
+			</div>
+			<hr>
+			
+		</div>
+	-->
+	
+	  
+	</mat-card-content>
+
+  </mat-card>
+  <div class="flex flex-col items-center" *ngIf="fileInfos.length !=0">
+	<button class="m-3 button" mat-flat-button (click)="backToUpload()">
+		<span class="ml-2 mr-1">Back to Upload</span>
+	</button>
+</div>
+	<!-- <table class="table" *ngIf="dataSource.data.length!=0" mat-table matSort [dataSource]="dataSource" aria-label="Uploaded PDF Data">
+		<!-- FileName --
+		<ng-container matColumnDef="fileName">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">File Name </th>
+			<td mat-cell *matCellDef="let element">
+				<ng-container *ngIf="element.fileName != null else temp">
+					{{ element.fileName }}   
+				</ng-container>
+				<ng-template #temp>
+					-
+				</ng-template>
+			</td>
+		</ng-container>
+		<!-- Status --
+		<ng-container matColumnDef="status">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header"> Status </th>
+			<td mat-cell *matCellDef="let element">
+				<ng-container *ngIf="element.status != null else temp"> {{element.status}} </ng-container>
+				<ng-template #temp>
+					-
+				</ng-template>
+
+			</td>
+		</ng-container>
+		<!-- Icon --
+		<ng-container matColumnDef="icon">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header"></th>
+			<td mat-cell *matCellDef="let element">
+				<ng-container *ngIf="element.icon === 'Uploaded' else temp">
+					<mat-icon [matTooltip]="'Uploaded'" matTooltipPosition="left"  svgIcon="heroicons_solid:check-circle" class="text-green-500"></mat-icon>
+				</ng-container>
+				<ng-template #temp>
+					<mat-icon [matTooltip]="'Rejected'" svgIcon="heroicons_solid:x-circle"
+						matTooltipPosition="left" class="text-red-500"></mat-icon>
+				</ng-template>
+			</td>
+		</ng-container>
+		<tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky top-0"></tr>
+		<tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+	</table>
+	 -->
+	
+</div>

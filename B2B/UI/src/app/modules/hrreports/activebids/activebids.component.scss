@@ -1,0 +1,105 @@
+
+::ng-deep .mat-form-width{
+    width:11rem Im !important;
+}
+
+::ng-deep .prose :where(thead th):not(:where([class~="not-prose"] *)) {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.direction-flex{
+  justify-content: space-between !important;
+}
+
+::ng-deep .prose :where(tbody td):not(:where([class~="not-prose"] *)) {
+  vertical-align: middle;
+}
+
+::ng-deep .prose :where(table):not(:where([class~="not-prose"] *)){
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+::ng-deep th.mat-header-cell{
+  text-align: center !important;
+}
+
+.tbl-headers{ 
+  color: white !important;
+  font-size:13px;
+  background-color: #1e293b;
+  margin-left: 10px;
+  margin-right: 10px;
+
+}
+
+ ::ng-deep .mat-focused{
+  border-color: #1e293b;
+ }
+
+
+::ng-deep .mat-form-field-label{
+  color: rgb(15, 15, 15) !important;
+  font-weight: 500 !important;
+  caret-color: #1e293b !important;
+}
+
+::ng-deep .mat-sort-header-container {
+  justify-content: center;
+}
+
+::ng-deep .mat-sort-header-stem{
+  color: azure;
+}
+
+::ng-deep .mat-sort-header-pointer-left{
+  color: azure;
+}
+
+
+
+::ng-deep .mat-sort-header-pointer-right{
+  color: azure;
+}
+
+::ng-deep .mat-sort-header-indicator{
+  color: azure;
+}
+
+.mat-mdc-form-field + .mat-mdc-form-field {
+  margin-left: 6px;
+}
+
+::ng-deep .specific-class > .mat-expansion-indicator:after {
+  margin:0px;
+  
+}
+
+.dark-icon .mat-expansion-indicator::after {
+  box-shadow: #1e293b;
+  font-weight: bold;
+  
+}
+
+::ng-deep .search-bar{
+  margin-top: -65px;
+  margin-right: 170px;
+ }
+
+ .not-found-container {
+  width: 50%;
+}
+
+.container {
+  max-height: 60vh;
+  overflow: auto;
+  margin: 0;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.26;
+}
+

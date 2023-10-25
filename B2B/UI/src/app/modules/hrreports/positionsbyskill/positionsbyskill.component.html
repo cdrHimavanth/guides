@@ -1,0 +1,63 @@
+<div *ngIf="!dataSource || !dataSource.data || dataSource.data.length === 0" class="text-center p-2"><mat-card
+    class="m-auto w-9/12 mt-5 p-5 flex items-center justify-center bg-card" *ngIf="dataSource.data.length == 0">
+    <img class="not-found-container" src="../../../assets/images/custom/no-data-found.png" alt="No data found" />
+  </mat-card>
+</div>
+<div class="flex flex-col mt-2 flex-auto min-w-0" *ngIf="dataSource && dataSource.data && dataSource.data.length > 0">
+  <div
+    class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between pl-6 pr-6 sm:px-10 dark:bg-transparent">
+    <div class="flex-1 min-w-0">
+      <!-- Title -->
+      <div class="mt-2 mb-2">
+        <h2 class="font-medium tracking-tight text-secondary">
+          Position By Skill
+        </h2>
+      </div>
+    </div>
+    <div class="max-w-full search-bar">
+      <mat-form-field class="flex justify-end full-width" appearance="outline">
+
+        <input [formControl]="searchControl" placeholder="Search" matInput [type]="'text'" (input)="applyFilter()" />
+
+
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex-auto pb-3 pl-6 pr-6 sm:pl-10 sm:pr-10">
+    <div class="mat-elevation-z8 container">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="skillSet">
+          <th colspan="999" mat-header-cell *matHeaderCellDef class="">Primary Skill</th>
+          <td colspan="999" mat-cell *matCellDef="let element" class="pl-9">
+            {{ element.skillSet }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="noOfPositions">
+          <th mat-header-cell *matHeaderCellDef>No of Positions</th>
+          <td colspan="999" mat-cell *matCellDef="let element" class="p-2">
+            {{ element.noOfPositions }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky top-0"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <!-- Group header -->
+        <ng-container matColumnDef="skillGroup">
+          <td colspan="999" mat-cell *matCellDef="let groupBy"><strong>{{groupBy.skillGroup}}</strong></td>
+        </ng-container>
+        <ng-container matColumnDef="totalPositions">
+          <td colspan="999" mat-cell *matCellDef="let groupBy" class="p-2">
+            <strong>{{ groupBy.totalPositions }}</strong>
+          </td>
+        </ng-container>
+        <tr mat-row *matRowDef="let row; columns: ['skillGroup','totalPositions']; when: isGroup"> </tr>
+      </table>
+      
+    </div>
+    <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10, 15,20]">
+    </mat-paginator>
+  </div>
+</div>

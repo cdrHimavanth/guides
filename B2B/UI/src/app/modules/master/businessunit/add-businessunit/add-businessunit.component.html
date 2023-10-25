@@ -1,0 +1,37 @@
+<div class="p-3">
+  <!-- header  -->
+  <mat-card class="card flex items-center justify-between w-full">
+    <h1 class="font-bold">Add Business Unit</h1>
+    <div class="flex">
+      <!-- Cancel button -->
+      <a
+        class="ml-2"
+        mat-icon-button
+        (click)="closeDrawer()"
+        matTooltip="Cancel"
+      >
+        <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+      </a>
+    </div>
+  </mat-card>
+
+  <form [formGroup]="addBusinessUnitForm ">
+    <div class="grid grid-cols-2 gap-2 pt-2">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Business Unit</mat-label>
+        <input  type="text" matInput formControlName="businessUnitName" placeholder="Enter Business Unit" />
+      </mat-form-field>
+
+
+    </div>
+    <div class="flex flex-row justify-center items-center">
+        <button class="m-3" mat-stroked-button (click)="closeDrawer()">
+          <span class="ml-2 mr-1">Cancel</span>
+        </button>
+        <button  (click)="AddBusinessUnit()" type="submit" class="text-white bg-[#1e293b] mr-2" mat-flat-button color="success">
+    <span class="ml-2 mr-1">Save</span>
+  </button>
+    </div>
+</form>
+</div>

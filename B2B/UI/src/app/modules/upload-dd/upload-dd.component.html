@@ -1,0 +1,40 @@
+<div class="flex flex-col bg-slate-300 flex-auto min-w-0">
+  <div class="flex items-center justify-between pl-5 pr-5 w-full">
+    <button class="back-button" matTooltip="Go Back" matTooltipPosition="right" (click)="goBack()"
+      (mouseleave)="isHoveredBackBtn = false" (mouseenter)="isHoveredBackBtn = true">
+      <mat-icon svgIcon="arrow_back" [ngStyle]="{'color': isHoveredBackBtn ? 'white' : 'black'}"></mat-icon>
+    </button>
+    <h2 class="text-3xl font-semibold tracking-tight leading-8 ml-3 mt-2">
+      Uploads
+    </h2>
+    <div class="flex items-center w-44 h-8 mb-1">
+      <mat-form-field class="mr-2 w-44 h-8" appearance="outline">
+        <mat-select [formControl]="selectFilter">
+          <mat-option class="w-44" value="positionUpload" matTooltip="Position Upload" matTooltipPosition="left">
+            Position Upload </mat-option>
+          <mat-option class="w-44" value="candidateSubmission" matTooltip="Candidate Submission"
+            matTooltipPosition="left"> Candidate Submission</mat-option>
+          <mat-option class="w-44" value="BidsReceived" matTooltip="Bids Received" matTooltipPosition="left">Bids
+            Received</mat-option>
+          <mat-option class="w-44" value="candidateDecline" matTooltip="Candidate Decline"
+            matTooltipPosition="left">Candidate Decline Upload</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div [ngSwitch]="selectFilter.value">
+    <div *ngSwitchCase="'positionUpload'">
+      <position-upload></position-upload>
+    </div>
+    <div *ngSwitchCase="'candidateSubmission'">
+      <candidate-submission-upload></candidate-submission-upload>
+    </div>
+    <div *ngSwitchCase="'candidateDecline'">
+      <candidate-decline-upload></candidate-decline-upload>
+    </div>
+    <div *ngSwitchCase="'BidsReceived'">
+      <bidinfo-upload></bidinfo-upload>
+    </div>
+  </div>
+</div>

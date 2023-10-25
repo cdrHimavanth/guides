@@ -1,0 +1,152 @@
+<div class="flex flex-col w-full bg-slate-300 p-2">
+    <!-- Header -->
+    <div class="flex items-center justify-between  pl-2 pr-2 w-full text-3xl font-semibold tracking-tight leading-8">
+
+        <button class="back-button" matTooltip="Go Back" matTooltipPosition="right" (click)="onBack()"
+            (mouseleave)="isHoveredBackBtn = false" (mouseenter)="isHoveredBackBtn = true">
+            <mat-icon svgIcon="arrow_back" [ngStyle]="{'color': isHoveredBackBtn ? 'white' : 'black'}"></mat-icon>
+        </button>
+        <h2 class="text-3xl font-semibold tracking-tight leading-8 ml-3">
+            {{ isChecked ? "Active" : "Closed" }} Bid Information
+        </h2>
+        <div class="flex items-center font-medium tracking-tight text-base">
+            <mat-slide-toggle class="mr-2" matTooltip="{{isChecked ? 'Closed': 'Active'}}" [checked]="isChecked"
+                (change)="toggleChanged($event)" [disabled]="isMatDrawerOpend">
+                <ng-container *ngIf="isChecked; else closeMsg">Active</ng-container>
+                <ng-template #closeMsg>Closed </ng-template>
+            </mat-slide-toggle>
+        </div>
+    </div>
+    <!-- Bid information table -->
+    <mat-drawer-container class="h-full bg-slate-300">
+        <mat-drawer (opened)="onDrawerOpened()" #drawer class="my-drawer" mode="over" position="end" id="drawer"
+            class="w-full sm:w-128 dark:bg-slate-300" disableClose>
+            <app-edit-bidinfo></app-edit-bidinfo>
+        </mat-drawer>
+        <mat-drawer-content>
+            <!-- Main -->
+            <!-- Not found container  -->
+            <mat-card class="m-auto w-9/12 mt-5 p-5 flex items-center justify-center bg-card"
+                *ngIf="dataSource.data.length == 0 && isLoading == false">
+                <img class="not-found-container" src="../../../assets/images/custom/no-data-found.png"
+                    alt="No data found" />
+            </mat-card>
+            <!-- Bid Info table  -->
+            <div *ngIf="dataSource.data.length != 0 && isLoading == false" class="mat-elevation-z8 m-4">
+                <div class="container">
+                    <table aria-describedby="bidInfoTable" class="w-full m-0" mat-table [dataSource]="dataSource"
+                        matSort>
+                        <!-- Order Number Column -->
+                        <ng-container matColumnDef="orderNo">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                Order Number
+                            </th>
+                            <td mat-cell *matCellDef="let row">{{ row.orderNo }}</td>
+                        </ng-container>
+                        <!-- Bid Number Column -->
+                        <ng-container matColumnDef="bidNo">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Bid Number</th>
+                            <td mat-cell *matCellDef="let row">{{ row.bidNo != null? row.bidNo : "-" }}</td>
+                        </ng-container>
+
+                        <!-- ProfileSubmitted Column -->
+                        <ng-container matColumnDef="bidName">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Profile Submitted</th>
+                            <td mat-cell *matCellDef="let row">{{row.bidName}} </td>
+                        </ng-container>
+
+                        <!-- Bid  Bid Received date Column -->
+                        <ng-container matColumnDef="bidReceivedDate">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Bid Received Date</th>
+                            <td mat-cell *matCellDef="let row">
+                                {{row.bidReceivedDate != null? (row.bidReceivedDate | date : "mediumDate"):'-' }}
+                            </td>
+                        </ng-container>
+
+                        <!--Over Target Column-->
+                        <ng-container matColumnDef="bidOverTarget">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                Over Target
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                {{ row.bidOverTarget ? "Yes" : row.bidOverTarget == false ? "No" : "-" }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Bid External Or Internal Column -->
+                        <ng-container matColumnDef="bidExternalOrInternal">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                External / Internal
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                {{ row.bidExternalOrInternal != null && row.bidExternalOrInternal != "" ?
+                                row.bidExternalOrInternal : "-" }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Bid Skill Set Column -->
+                        <ng-container matColumnDef="bidSkillSet">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                Skill set
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                {{ row.bidSkillSet != null && row.bidSkillSet != "" ? row.bidSkillSet : "-" }}
+                            </td>
+                        </ng-container>
+
+                        <!-- PO Number Column -->
+                        <ng-container matColumnDef="bidPoNumber">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                PO Number
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                {{ row.bidPoNumber != "" && row.bidPoNumber != null ? row.bidPoNumber : "-" }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Bid Status Column -->
+                        <ng-container matColumnDef="bidStatus">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                Bid Status
+                            </th>
+                            <td mat-cell *matCellDef="let row">{{ row.bidStatus != null && row.bidStatus != "" ?
+                                row.bidStatus:"-"}}</td>
+                        </ng-container>
+                        <ng-container *ngFor="let headersFilter of filtersVal; let i=index"
+                            [matColumnDef]="headersFilter">
+                            <th mat-header-cell *matHeaderCellDef [sticky]="true">
+                                <div *ngIf="i!== 3 ">
+                                    <input matInput [formControl]="filterControls[headersFilter]" class="input-search">
+                                </div>
+                                <div *ngIf="i === 3" class="date-input-search input-search  datepicker-container">
+                                    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                                        <input matStartDate [formControl]="startFilterControl">
+                                        <input matEndDate [formControl]="endFilterControl">
+                                    </mat-date-range-input>
+                                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-date-range-picker #picker></mat-date-range-picker>
+                                </div>
+                            </th>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky sticky-header-row p-0 m-0">
+                        </tr>
+                        <tr mat-header-row *matHeaderRowDef="filtersVal"
+                            class="sticky sticky-search-header-row p-0 m-0"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="edit(row)"></tr>
+
+                        <!-- Row shown when there is no matching data. -->
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell" colspan="4">
+                                No data matching the filter <span class="font-bold"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <mat-paginator *ngIf="dataSource.data.length != 0" [pageSizeOptions]="[10, 20, 50, 100]"
+                    aria-label="Select page of users"></mat-paginator>
+            </div>
+        </mat-drawer-content>
+    </mat-drawer-container>
+
+</div>

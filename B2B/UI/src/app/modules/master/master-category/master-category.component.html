@@ -1,0 +1,53 @@
+<div class="flex flex-col w-full bg-slate-300">
+    <div class="width-75 flex items-center justify-between pl-2 pr-2 w-full text-3xl font-semibold tracking-tight leading-8">
+      <h2 class="text-3xl font-semibold tracking-tight leading-8 ml-3">
+        Master 
+      </h2>
+      <div class="flex items-center font-medium tracking-tight text-base">
+        <mat-form-field class="w-44 h-10 m-2">
+          <input [disabled]="isMatDrawerOpend" matInput (keyup)="applyFilter($event)" placeholder="Search" #input />
+        </mat-form-field>
+      </div>
+    </div>
+  
+    <mat-drawer-container class="h-full bg-slate-300">
+      <mat-drawer (opened)="onEditDrawerOpened()" #firstDrawer class="my-drawer" mode="over" position="end" id="editdrawer" class="w-full sm:w-128 dark:bg-slate-300" disableClose>
+        <app-edit-master></app-edit-master>
+      </mat-drawer>
+
+      <mat-drawer-content>
+        <mat-card class="m-auto w-9/12 mt-5 p-5 flex items-center justify-center bg-card" *ngIf="dataSource.data.length == 0 && isLoading == false">
+          <img class="not-found-container" src="../../../assets/images/custom/no-data-found.png" alt="No data found" />
+        </mat-card>
+  
+        <div *ngIf="dataSource.data.length != 0 && isLoading == false" class="mat-elevation-z8 m-4">
+          <div class="width-75 container">
+            <table aria-describedby="masterTable" class="w-full m-0" mat-table [dataSource]="dataSource" matSort>
+                               
+                <ng-container matColumnDef="masterCategory">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Master Category
+                    </th>
+                    <td mat-cell *matCellDef="let row">{{ row | titlecase }}</td>
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="toggleDrawer(firstDrawer, row)"></tr>
+
+               
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">
+                        No data matching the filter "{{ input.value }}"
+                    </td>
+                </tr>
+            </table>
+          </div>
+          <mat-paginator *ngIf="dataSource.data.length != 0" [pageSizeOptions]="[10, 15, 25, 100]" aria-label="Select page of users"></mat-paginator>
+        </div>
+      </mat-drawer-content>
+    </mat-drawer-container>
+  </div>
+  
+
+

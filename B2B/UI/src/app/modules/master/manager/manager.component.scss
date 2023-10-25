@@ -1,0 +1,41 @@
+.mat-header-cell {
+  color: white !important;
+  text-align: center !important;
+  font-size: 13px;
+  background-color: #1e293b;
+  position: sticky;
+  top: 0;
+  min-width: 100px;
+  max-width: 200px;
+  padding: 5px;
+}
+
+tr {
+  cursor: pointer;
+}
+
+.mat-column-declinedReason {
+  min-width: 200px !important;
+}
+
+.mat-cell {
+  text-align: center !important;
+  // border: 1px solid red;
+  min-width: 100px;
+  max-width: 200px;
+}
+
+.mat-cell,
+.mat-footer-cell {
+  font-size: 13px;
+  padding: 5px;
+}
+
+.not-found-container {
+  width: 50%;
+}
+
+.container {
+  max-height: 60vh;
+  overflow: auto;
+}

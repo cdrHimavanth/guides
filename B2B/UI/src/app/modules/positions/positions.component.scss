@@ -1,0 +1,143 @@
+.mat-flat-button.mat-blue {
+    color: white;
+    background-color: #1e293b;
+}
+
+.container {
+    max-height: 60vh;
+    overflow: auto;
+    margin: 0;
+}
+
+.not-found-container {
+    width: 50%;
+}
+
+.mat-cell,
+.mat-footer-cell {
+    font-size: 13px;
+    padding: 5px;
+}
+
+.mat-header-cell {
+    text-align: center !important;
+    color: white !important;
+    font-size: 13px;
+    background-color: #1e293b;
+    position: sticky;
+    top: 0;
+    min-width: 100px;
+    max-width: 200px;
+}
+
+.mat-column-jobDescription {
+    max-width: 270px !important;
+    min-width: 270px !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+}
+
+.skillSetStyles {
+    max-width: 270px !important;
+    min-width: 270px !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+}
+
+.primarySkill {
+    max-width: 200px !important;
+    min-width: 200px !important;
+}
+
+tr {
+    cursor: pointer;
+}
+
+th,
+td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+::ng-deep .mat-drawer-container {
+    background-color: transparent !important;
+}
+
+::ng-deep .mat-drawer-content {
+    padding-left: 1rem Im !important;
+    padding-right: 1rem Im !important;
+    padding-bottom: 1rem Im !important;
+}
+
+::ng-deep .mat-sort-header-container {
+    display: flex;
+    justify-content: center;
+}
+
+::ng-deep .col-filter {
+    min-width: 66px;
+    min-height: 22px;
+}
+
+.input-search {
+    background-color: white;
+    color: black;
+    height: 30px;
+    border-radius: 6px;
+    width: 94px;
+    margin-top: 5px;
+    font-weight: 400;
+}
+
+.date-input-search {
+    width: 150px;
+}
+
+.jd-search {
+    width: 250px;
+}
+
+.primary-search {
+    width: 170px;
+}
+
+.datepicker-container {
+    display: flex;
+    align-items: center;
+}
+
+.heading-span {
+    max-height: 20px;
+    width: 200px
+}
+
+th.mat-header-cell {
+    border-bottom-width: 0px !important;
+}
+
+.sticky-header-row {
+    top: 0;
+    z-index: 2;
+}
+
+.sticky-search-header-row {
+    top: 58px;
+    z-index: 1;
+}
+
+.back-button{
+    border-radius: 100px;
+    width: 36px;
+    height: 35px;
+    padding: 3px;
+    text-align: center;
+  }
+
+  .back-button:hover{
+    background-color: #1e293b;
+    border-radius: 100px;
+    width: 36px;
+    height: 35px;
+    padding: 3px;
+    text-align: center;
+  }

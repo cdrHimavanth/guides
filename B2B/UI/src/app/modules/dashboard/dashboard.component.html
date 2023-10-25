@@ -1,0 +1,612 @@
+<div class="w-full flex flex-col  justify-center  bg-slate-300">
+
+
+
+    <div class="scroll-container">
+        <div class="scroll-content">
+            {{todayOrderCount}} new order(s) have been broadcast today ({{currentDate | date:'dd MMMM yyyy'}})
+        </div>
+    </div>
+
+    <!--The content below is only a placeholder and can be replaced.-->
+    <app-graph-multiple></app-graph-multiple>
+    <!-- <div id="chart">
+        <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+            [stroke]="chartOptions.stroke" [tooltip]="chartOptions.tooltip"
+            [dataLabels]="chartOptions.dataLabels"></apx-chart>
+
+        <p class="m-6 text-gray-500">Note: This graph displays position data from the past 12 months, starting from the current month.</p>
+    </div> -->
+
+
+    <div class="p-5">
+        <!-- Jobs Count -->
+        <div class="shadow pt-3 pl-3 rounded-lg  h-75 bg-gray-50 flex-wrap items-center m-3 cards-container">
+            <div class="text-600 text-center text-gray-700 uppercase m-auto"
+                *ngIf="numberCardData.length === 0 else showNumCards">
+                <strong>NO DATA Found!</strong>
+            </div>
+            <ng-template #showNumCards>
+
+                <div class="custom-card" *ngFor="let card of numberCardData">
+                    <ngx-charts-number-card [view]="cardView" [scheme]="cardColorScheme" [results]="[card]"
+                        [cardColor]="cardColor" class="w-full" (select)="onSelectNumberCard($event)">
+                    </ngx-charts-number-card>
+
+                </div>
+
+            </ng-template>
+
+
+
+        </div>
+    </div>
+
+
+    <div class="w-full flex flex-wrap items-center justify-around p-5 grid grid-cols-2 sm:grid-cols-2">
+
+        <div
+            class="flex flex-col flex-auto justify-center p-6 bg-card shadow rounded-lg  overflow-auto  flex-initial h-105 m-3 m-3 ">
+
+
+            <div class="text-600 text-center text-gray-700 uppercase"
+                *ngIf="bidGraphData.length === 0 else showBidGraph">
+                <strong>NO DATA Found!</strong>
+            </div>
+            <ng-template #showBidGraph>
+                <!-- <ngx-charts-bar-vertical [view]="graphView" [scheme]="colorScheme" [results]="bidGraphData"
+                    [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legendPosition]="'below'"
+                    [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [yAxisLabel]="yAxisLabel"
+                    [yAxisTickFormatting]="formatYAxisTick" class="custom-chart">
+
+                </ngx-charts-bar-vertical> -->
+
+                <ngx-charts-bar-vertical-2d [view]="graphView" [scheme]="colorScheme" [results]="bidGraphData"
+                    [gradient]="bidGradient" [xAxis]="showBidXAxis" [yAxis]="showBidYAxis"
+                    [showYAxisLabel]="bidShowYAxisLabel" [yAxisLabel]="bidYAxisLabel"
+                    (select)="onSelectBidGraph($event)">
+                </ngx-charts-bar-vertical-2d>
+
+
+
+
+
+                <div class="legend-container">
+
+                    <div *ngFor="let data of bidLegendLabels" class="legend-item">
+                        <div class="legend-color" [style.background-color]="getBidLegendColor(data)"></div>
+                        <div class="legend-label">{{data}}</div>
+                    </div>
+                </div>
+            </ng-template>
+
+
+
+
+
+        </div>
+
+        <div
+            class="flex flex-col flex-auto justify-center p-6 bg-card shadow rounded-lg  overflow-auto  flex-initial h-105 m-3 m-3 ">
+
+
+            <div class="text-600 text-center text-gray-700 uppercase"
+                *ngIf="positionsGraphData.length === 0 else showPositionsGraph">
+                <strong>NO DATA Found!</strong>
+            </div>
+            <ng-template #showPositionsGraph>
+
+
+                <ngx-charts-bar-vertical-2d [view]="graphView" [scheme]="colorScheme" [results]="positionsGraphData"
+                    [gradient]="positionGradient" [xAxis]="showPositionXAxis" [yAxis]="showPositionYAxis"
+                    [showYAxisLabel]="positionShowYAxisLabel" [yAxisLabel]="positionYAxisLabel"
+                    (select)="onSelectPositionGraph($event)">
+                </ngx-charts-bar-vertical-2d>
+
+
+
+                <div class="legend-container">
+
+                    <div *ngFor="let data of positionLegendLabels" class="legend-item">
+                        <div class="legend-color" [style.background-color]="getPositionLegendColor(data)"></div>
+                        <div class="legend-label">{{data}}</div>
+                    </div>
+                </div>
+            </ng-template>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+    <div class="w-full flex flex-wrap items-center justify-around p-5 grid grid-cols-1">
+        <!-- Open Positions Summary -->
+
+        <div class="overflow-x-auto shadow-md rounded-lg h-60 bg-white  m-3">
+            <h1 class="sticky top-0 left-0 right-0 text-white text-center hover:uppercase p-3 bg-[#1e293b]">
+                <strong>Open
+                    Positions
+                    Summary</strong>
+            </h1>
+
+            <div class="text-600 text-center text-gray-700 uppercase mt-20"
+                *ngIf="(openPositionsSummaryDatasource === undefined && closedPositionsSummaryDatasource === undefined)else PositionsSummaryTable">
+                <strong>NO DATA Found!</strong>
+            </div>
+
+            <ng-template #PositionsSummaryTable>
+                <!-- This is Open Positions Summary Table -->
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase">
+                        <tr class="text-center">
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                All Open Positions
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                Total Active Bids
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                Sourcing
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                Not Sourcing
+                            </th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr class="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+
+                            <td class="px-6 py-4" (click)="getPositions()">
+                                {{openPositionsSummaryDatasource.allOpenPositions}}
+                            </td>
+                            <td class="px-6 py-4" (click)="getbids()">
+                                {{openPositionsSummaryDatasource.totalActiveBids}}
+                            </td>
+                            <td class="px-6 py-4" (click)="getSourcing(true)">
+                                {{openPositionsSummaryDatasource.sourcing.length}}
+                            </td>
+                            <td class="px-6 py-4" (click)="getSourcing(false)">
+                                {{openPositionsSummaryDatasource.notSourcing.length }}
+                            </td>
+
+                        </tr>
+                    </tbody>
+
+                    <thead class="text-xs text-gray-700 uppercase">
+
+                        <tr class="text-center">
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                Today
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                This Week (Mon-Fri)
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                This Month
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                Previous Month
+                            </th>
+
+                        </tr>
+
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr class="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <td class="px-6 py-4" (click)="getToday('/positions')">
+                                {{openPositionsSummaryDatasource.today}}
+                            </td>
+                            <td class="px-6 py-4" (click)="getThisWeek('/positions')">
+                                {{openPositionsSummaryDatasource.thisWeek}}
+                            </td>
+                            <td class="px-6 py-4" (click)="getThisMonth('/positions')">
+                                {{openPositionsSummaryDatasource.thisMonth}}
+                            </td>
+                            <td class="px-6 py-4" (click)="getPreviousMonth('/positions')">
+                                {{openPositionsSummaryDatasource.previousMonth}}
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </ng-template>
+
+        </div>
+
+    </div>
+
+    <div class="w-full flex flex-wrap items-center justify-around p-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+
+
+
+        <!-- Bid Submission Summary -->
+        <div class="overflow-x-auto shadow-md rounded-lg h-60 bg-white  m-3">
+            <h1 class="sticky top-0 left-0 right-0 text-white text-center hover:uppercase p-3 bg-[#1e293b]">
+                <strong>Bid
+                    Submission
+                    Summary</strong>
+            </h1>
+
+            <div class="text-600 text-center text-gray-700 uppercase mt-20"
+                *ngIf="(openBidSummaryDatasource === undefined && closedBidSummaryDatasource === undefined) else BidSubmissionTable">
+                <strong>NO DATA Found!</strong>
+            </div>
+
+            <ng-template #BidSubmissionTable>
+                <!-- This is Bid Submission Summary Table -->
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase">
+                        <tr class="text-center">
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                Today
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                This Week(Mon-Fri)
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                This Month
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3">
+                                Previous Month
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+
+                            <td class="px-6 py-4 cursor-default">
+                                <a class="cursor-pointer"
+                                    (click)="getToday('/bidinfo')">{{openBidSummaryDatasource.today}}</a>
+
+                            </td>
+                            <td class="px-6 py-4 cursor-default">
+                                <a class="cursor-pointer"
+                                    (click)="getThisWeek('/bidinfo')">{{openBidSummaryDatasource.thisWeek}}</a>
+
+                            </td>
+                            <td class="px-6 py-4 cursor-default">
+                                <a class="cursor-pointer"
+                                    (click)="getThisMonth('/bidinfo')">{{openBidSummaryDatasource.thisMonth}}</a>
+
+                            </td>
+                            <td class="px-6 py-4 cursor-default">
+                                <a class="cursor-pointer"
+                                    (click)="getPreviousMonth('/bidinfo')">{{openBidSummaryDatasource.previousMonth}}</a>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-template>
+
+
+
+
+        </div>
+
+        <!-- Positions -->
+        <div class="overflow-x-auto shadow-md rounded-lg h-60 bg-white  m-3 cursor-default ">
+            <h1
+                class="sticky top-0 left-0 right-0 text-white text-center hover:uppercase p-3 bg-[#1e293b] cursor-default">
+                <strong>Positions</strong>
+            </h1>
+            <div class="text-600 text-center text-gray-700 uppercase mt-20 cursor-default"
+                *ngIf="(openJobsDataSource.length === 0) else showData1">
+                <strong>NO DATA Found!</strong>
+            </div>
+            <ng-template #showData1>
+                <!-- This is Bid Submission Positions Table -->
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 ">
+                    <thead class="text-xs text-gray-700 uppercase">
+                        <tr class="text-center">
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3 ">
+                                Position Type
+                            </th>
+                            <th scope="col" class="bg-gray-50 sticky top-8 px-6 py-3 ">
+                                <mat-icon svgIcon="heroicons_outline:briefcase"></mat-icon>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let data of openJobsDataSource">
+                        <tr class="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                            (click)="getOrderType(data.positionType)">
+
+                            <td *ngIf="data.positionType != null else nullPositionType"
+                                class="px-6 py-4 cursor-default">
+                                <a class="cursor-pointer">{{data.positionType}}</a>
+
+                            </td>
+
+                            <ng-template #nullPositionType>
+                                <td class="px-6 py-4 cursor-default">
+                                    -
+                                </td>
+                            </ng-template>
+
+
+                            <td class="px-6 py-4 cursor-default">
+                                <a class="cursor-pointer">{{data.noOfPositions}}</a>
+
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-template>
+
+        </div>
+
+        <!-- Position By Region -->
+        <div class="relative overflow-x-auto shadow-md rounded-lg  bg-white h-60 m-3">
+            <h1 class="sticky top-0 left-0 right-0 text-white text-center hover:uppercase p-3 bg-[#1e293b]">
+                <strong>Position by
+                    Region</strong>
+            </h1>
+
+            <div class="text-600 text-center text-gray-700 uppercase mt-20"
+                *ngIf="(openJobsRegionDataSource.length === 0) else showData2">
+                <strong>NO DATA Found!</strong>
+            </div>
+
+            <ng-template #showData2>
+                <!-- This is Position By Region Table-->
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 cursor-default">
+                    <thead class="text-xs text-gray-700 uppercase cursor-default">
+                        <tr class="text-center">
+                            <th scope="col" class="sticky top-8 px-6 py-3 bg-gray-50">
+                                Region
+                            </th>
+
+                            <ng-container *ngFor="let ordType of orderTypesByRegionHeaders">
+                                <th class="sticky top-8 px-6 py-3 bg-gray-50">
+                                    {{ ordType }}
+                                </th>
+                            </ng-container>
+                            <th scope="col" class="sticky top-8 px-6 py-3 bg-gray-50">
+                                Grand Total
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="cursor-default" *ngFor="let data of openJobsRegionDataSource">
+                        <tr class="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 cursor-default">
+
+                            <td *ngIf="data.region != null else nullRegion" class="px-6 py-4 cursor-default">
+                                {{data.region}}
+                            </td>
+                            <ng-template>
+                                <td #nullRegion>
+                                    -
+                                </td>
+                            </ng-template>
+
+                            <ng-container *ngFor="let ordType of orderTypesByRegionHeaders">
+                                <td class="cursor-pointer" (click)="regionByPosition(data, ordType)">{{
+                                    data.orderTypeCount[ordType] || 0 }}</td>
+                            </ng-container>
+                            <td class="cursor-pointer" (click)="regionByTotal(data)">{{ data.grandTotal }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-template>
+
+        </div>
+
+        <!-- Position By BU -->
+        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white h-60 m-3">
+            <h1 class="sticky top-0 left-0 right-0 text-white text-center hover:uppercase p-3 bg-[#1e293b]">
+                <strong>Position by
+                    BU</strong>
+            </h1>
+
+            <div class="text-600 text-center text-gray-700 uppercase mt-20"
+                *ngIf="(bussinessUnitDataSource.length === 0) else showData3">
+                <strong>NO DATA Found!</strong>
+            </div>
+            <ng-template #showData3>
+                <!-- This is Position By Business Unit Table -->
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 ">
+                    <thead class="text-xs text-gray-700 uppercase">
+                        <tr class="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
+                            <th scope="col" class="sticky top-8 px-6 py-3 bg-gray-50">
+                                Bussiness Unit
+                            </th>
+
+                            <ng-container *ngFor="let ordType of orderTypeByBuHeaders ">
+                                <th class="sticky top-8 px-6 py-3 bg-gray-50">
+                                    {{ ordType }}
+                                </th>
+                            </ng-container>
+
+                            <th scope="col" class="sticky top-8 px-6 py-3 bg-gray-50 ">
+                                Grand Total
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let data of bussinessUnitDataSource">
+                        <tr class="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
+
+                            <td *ngIf="data.businessUnit!=null else nullBusinessunit" class="px-6 py-4 cursor-default">
+                                <a class="cursor-default">{{data.businessUnit}}</a>
+                            </td>
+                            <ng-template>
+                                <td class="px-6 py-4 ">
+                                    -
+                                </td>
+                            </ng-template>
+
+                            <ng-container *ngFor="let ordType of orderTypeByBuHeaders ">
+                                <td class="cursor-pointer" (click)="businessUnitPosition(data, ordType)">{{
+                                    data.orderTypeCount[ordType] || 0 }}</td>
+                            </ng-container>
+                            <td class="cursor-pointer" (click)="businessUnitTotal(data)">{{ data.grandTotal }}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-template>
+
+
+        </div>
+
+
+        <!-- Position By Skill Group -->
+        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white h-60 m-3">
+            <h1 class="sticky top-0 left-0 right-0 text-white text-center hover:uppercase p-3 bg-[#1e293b]">
+                <strong>Position by Skill
+                    Group</strong>
+            </h1>
+
+            <div class="text-600 text-center text-gray-700 uppercase mt-20"
+                *ngIf="(openJobsSkillGroupDataSource.length === 0) else showData4">
+                <strong>NO DATA Found!</strong>
+            </div>
+
+            <ng-template #showData4>
+                <!-- This is Position By Skill Group Table -->
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase">
+                        <tr class="text-center">
+
+                            <p
+                                *ngIf="openJobsSkillGroupDataSource.length === 1 && openJobsSkillGroupDataSource[0].skillGroup === null else skillGroupHeaderWithData">
+
+                            </p>
+                            <ng-template #skillGroupHeaderWithData>
+                                <th scope="col" class="sticky top-8 px-6 py-3 bg-gray-50">
+                                    Skill Group
+                                </th>
+                                <th scope="col" class="sticky top-8 px-6 py-3 bg-gray-50">
+                                    <mat-icon>psychology</mat-icon>
+                                </th>
+                            </ng-template>
+
+
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let data of openJobsSkillGroupDataSource">
+                        <p class="text-500 text-center w-75 text-gray-700 uppercase mt-20"
+                            *ngIf="openJobsSkillGroupDataSource.length === 1 && data.skillGroup=== null else skillGroupWithGreaterThan0Length">
+                            <strong>NO DATA</strong>
+                        </p>
+
+                        <ng-template #skillGroupWithGreaterThan0Length>
+                            <tr
+                                class="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 cursor-default">
+
+                                <td class="px-6 py-4 cursor-default"
+                                    *ngIf="data.skillGroup !== null else emptySkillGroup">
+                                    <a class="cursor-pointer"
+                                        (click)="getPositionsWithSkillGroup(data.skillGroup)">{{data.skillGroup}}</a>
+                                </td>
+
+                                <td class="px-6 py-4 cursor-default"
+                                    *ngIf="data.skillGroup !== null else emptySkillGroup">
+                                    <a class="cursor-pointer"
+                                        (click)="getPositionsWithSkillGroup(data.skillGroup)">{{data.sumOFNoOfPositions}}</a>
+
+                                </td>
+
+                                <ng-template #emptySkillGroup>
+
+                                </ng-template>
+
+
+                            </tr>
+
+                        </ng-template>
+
+                    </tbody>
+                </table>
+            </ng-template>
+
+
+        </div>
+
+        <!-- Position By Manager Org -->
+        <div class="relative overflow-x-auto shadow-md rounded-lg bg-white h-60 m-3 ">
+
+            <h1 class="sticky top-0 left-0 right-0 text-white text-center hover:uppercase p-3 bg-[#1e293b]">
+
+                <label><Strong>Position By Manager</Strong></label>
+                <select class="ml-3 bg-slate-500" #managerSelect (change)="onSelectManager(managerSelect.value)">
+                    <option value="LL2">LL2</option>
+                    <option value="LL3">LL3</option>
+                    <option value="LL4">LL4</option>
+                    <option value="LL5">LL5</option>
+                    <option value="LL6">LL6</option>
+                </select>
+
+
+            </h1>
+            <div>
+
+            </div>
+            <div class="text-600 text-center text-gray-700 uppercase mt-20"
+                *ngIf="(currentManagerData.length === 0) else showData5">
+                <strong>NO DATA Found!</strong>
+            </div>
+
+            <ng-template #showData5>
+                <!-- This is Position By Manager Org Table -->
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase">
+                        <tr class="text-center">
+                            <th scope="col" class="sticky top-8  px-6 py-3 bg-gray-50">
+                                Manager Name
+                            </th>
+                            <th scope="col" class=" sticky top-8 px-6 py-3 bg-gray-50">
+                                <mat-icon>person_pin</mat-icon>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let data of currentManagerData">
+                        <tr class="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+
+                            <td *ngIf="data.managerColumn != null else nullLL2Manger" class="px-6 py-4 cursor-default">
+                                <a class="cursor-pointer"
+                                    (click)="getManagers(data, managerSelect.value)">{{data.managerColumn}}</a>
+                            </td>
+                            <ng-template #nullLL2Manger>
+                                <td class="px-6 py-4 cursor-default">
+                                    -
+                                </td>
+                            </ng-template>
+                            <td class="px-6 py-4 cursor-default">
+                                <a class="cursor-pointer"
+                                    (click)="getManagers(data, managerSelect.value)">{{data.noOfPositions}}</a>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-template>
+
+
+        </div>
+
+    </div>
+
+
+
+</div>

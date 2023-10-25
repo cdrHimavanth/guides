@@ -1,0 +1,425 @@
+<div class="flex flex-col w-full bg-slate-300">
+  <!-- Header -->
+  <div class="flex items-center justify-between pl-2 pr-2 w-full text-3xl font-semibold tracking-tight leading-8">
+
+    <button class="back-button" matTooltip="Go Back" matTooltipPosition="right" (click)="onBack()"
+      (mouseleave)="isHoveredBackBtn = false" (mouseenter)="isHoveredBackBtn = true">
+      <mat-icon svgIcon="arrow_back" [ngStyle]="{'color': isHoveredBackBtn ? 'white' : 'black'}"></mat-icon>
+    </button>
+    <h2 class="text-3xl font-semibold tracking-tight leading-8 ml-3">
+      {{ isChecked ? "Open" : "Closed" }} Positions
+    </h2>
+    <div class="flex flex-row justify-end">
+      <div class="m-2 mt-4 font-medium tracking-tight text-base">
+        <mat-slide-toggle class="mt-2 mr-2" [checked]="isChecked" (change)="toggleChanged()" matTooltipPosition="above"
+          [matTooltip]="isChecked ? 'Close' : 'Open'" [disabled]="isMatDrawerOpend">
+        </mat-slide-toggle>
+        <ng-container *ngIf="!isChecked; else closeMsg">Closed </ng-container>
+        <ng-template #closeMsg>Open </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <mat-drawer-container class="h-full">
+    <mat-drawer #drawer (opened)="onDrawerOpened()" class="my-drawer" mode="over" position="end" id="drawer"
+      class="w-full sm:w-128" disableClose>
+      <app-details></app-details>
+    </mat-drawer>
+    <mat-drawer-content>
+      <!-- Main -->
+      <!-- No data foud container  -->
+      <mat-card class="m-auto w-9/12 mt-5 pl-5 pr-5 pb-5 flex items-center justify-center"
+        *ngIf="dataSource.data.length == 0 && isLoading">
+        <img class="not-found-container" src="../../../assets/images/custom/no-data-found.png" alt="No data found" />
+      </mat-card>
+      <div class="mat-elevation-z ml-4 mr-4 mb-4" *ngIf="dataSource.data.length != 0 && isLoading">
+        <div class="container">
+          <table mat-table class="w-full m-0" [dataSource]="dataSource" aria-label="Positions Data" matSort
+            matSortActive="created" matSortDisableClear matSortDirection="desc">
+            <!-- Order Number Column -->
+            <ng-container matColumnDef="orderNo">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Order Number
+              </th>
+
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.orderNo != null; else temp">
+                  {{ element.orderNo }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- Positions -->
+            <ng-container matColumnDef="positionNos">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Positions
+              </th>
+              <td mat-cell *matCellDef="let element" #tooltip="matTooltip" [matTooltip]="
+                  element.positionNos != [] ? element.positionNos : ''
+                " matTooltipPosition="right">
+                <ng-container *ngIf="
+                    element.positionNos != [] &&
+                      element.positionNos != '' &&
+                      element.positionNos != null;
+                    else temp
+                  ">
+                  {{ element.positionNos | truncate : 18 }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- No. of Positions Column -->
+            <ng-container matColumnDef="noOfPositions">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                No. of Positions
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.noOfPositions != null; else temp">
+                  {{ element.noOfPositions }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- Recruiter Column -->
+            <ng-container matColumnDef="recruiter">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Recruiter
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.recruiter != null && element.recruiter.length > 0;
+                    else temp
+                  ">
+                  {{ element.recruiter }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- Position Broadcasted date Column -->
+            <ng-container matColumnDef="broadcastDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Broadcast Date
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.broadcastDate != null &&
+                      element.broadcastDate.length > 0;
+                    else temp
+                  ">
+                  {{ element.broadcastDate | date : "mediumDate" }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- Stratification Column -->
+            <ng-container matColumnDef="stratification">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Stratification
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.stratification != null &&
+                      element.stratification.length > 0;
+                    else temp
+                  ">
+                  {{ element.stratification }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--  Target Rate Column -->
+            <ng-container matColumnDef="targetRate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Target Rate
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.targetRate != null; else temp">
+                  {{ element.targetRate }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--  Skill Group Column -->
+            <ng-container matColumnDef="skillGroup">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Skill Group
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.skillGroup != null &&
+                      element.skillGroup != 'Unassigned' &&
+                      element.skillGroup.length > 0;
+                    else temp
+                  ">
+                  {{ element.skillGroup }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--  Primary Skill Column -->
+            <ng-container matColumnDef="preferredSkills">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Primary Skill
+              </th>
+              <td mat-cell *matCellDef="let element" #tooltip="matTooltip" matTooltip="{{ element.preferredSkills }}"
+                matTooltipPosition="left" class="primarySkill">
+                <ng-container *ngIf="
+                    element.preferredSkills != null &&
+                      element.preferredSkills.length > 0;
+                    else temp
+                  ">
+                  {{ element.preferredSkills | truncate : 100 }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- Skill Set Column -->
+            <ng-container matColumnDef="skillRequired">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Skill Set
+              </th>
+              <td mat-cell *matCellDef="let element" #tooltip="matTooltip" matTooltip="{{ element.skillRequired }}"
+                matTooltipPosition="left" class="skillSetStyles">
+                <ng-container *ngIf="
+                    element.skillRequired != null &&
+                      element.skillRequired.length > 0;
+                    else temp
+                  ">
+                  {{ element.skillRequired | truncate : 120 }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- Job Description Column -->
+            <ng-container matColumnDef="jobDescription">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Job Description
+              </th>
+              <td mat-cell *matCellDef="let element" #tooltip="matTooltip" matTooltip="{{ element.jobDescription }}"
+                matTooltipPosition="left">
+                <ng-container *ngIf="
+                    element.jobDescription != null &&
+                      element.jobDescription.length > 0;
+                    else temp
+                  ">
+                  {{ element.jobDescription | truncate : 110 }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--  Did Customer Reachedout Column -->
+            <ng-container matColumnDef="didCustomerReachedOut">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Did Customer Reachedout
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.didCustomerReachedOut != null; else temp">
+                  {{ element.didCustomerReachedOut ? "Yes" : "No" }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--  Probability Column -->
+            <ng-container matColumnDef="probability">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Probability
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.probability != null; else temp">
+                  {{ element.probability }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--   Submitted Above Target Column -->
+            <ng-container matColumnDef="submittedAboveTarget">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Submitted Above Target
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.submittedAboveTarget != null; else temp">
+                  {{ element.submittedAboveTarget ? "Yes" : "No" }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--   Region Column -->
+            <ng-container matColumnDef="regionName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Region</th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.regionName &&
+                      element.regionName != 'Unassigned' &&
+                      element.regionName.length > 0;
+                    else temp
+                  ">
+                  {{ element.regionName }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--   Position Type Column -->
+            <ng-container matColumnDef="orderType">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Order Type
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.orderType &&
+                      element.orderType != 'Unassigned' &&
+                      element.orderType.length > 0;
+                    else temp
+                  ">
+                  {{ element.orderType }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--  Line Of Business -->
+            <ng-container matColumnDef="lineOfBusiness">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Line of Business
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.buName &&
+                      element.buName != 'Unassigned' &&
+                      element.buName.length > 0;
+                    else temp
+                  ">
+                  {{ element.buName }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- Product Line -->
+            <ng-container matColumnDef="productLineName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Product Line
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.productLineName &&
+                      element.productLineName != 'Unassigned' &&
+                      element.productLineName.length > 0;
+                    else temp
+                  ">
+                  {{ element.productLineName }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- LL2 Column -->
+            <ng-container matColumnDef="ll2Manager">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>LL2</th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.ll2Manager != null &&
+                      element.ll2Manager != 'Unassigned' &&
+                      element.ll2Manager.length > 0;
+                    else temp
+                  ">
+                  {{ element.ll2Manager }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- LL3 Column -->
+            <ng-container matColumnDef="ll3Manager">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>LL3</th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.ll3Manager != null &&
+                      element.ll3Manager != 'Unassigned' &&
+                      element.ll3Manager.length > 0;
+                    else temp
+                  ">
+                  {{ element.ll3Manager }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- LL4 Column -->
+            <ng-container matColumnDef="ll4Manager">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>LL4</th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.ll4Manager != null &&
+                      element.ll4Manager != 'Unassigned' &&
+                      element.ll4Manager.length > 0;
+                    else temp
+                  ">
+                  {{ element.ll4Manager }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!-- LL5 Column -->
+            <ng-container matColumnDef="ll5Manager">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>LL5</th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.ll5Manager != null &&
+                      element.ll5Manager != 'Unassigned' &&
+                      element.ll5Manager.length > 0;
+                    else temp
+                  ">
+                  {{ element.ll5Manager }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <!--   LL6 Column -->
+            <ng-container matColumnDef="ll6Manager">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>LL6</th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="
+                    element.ll6Manager != null &&
+                      element.ll6Manager != 'Unassigned' &&
+                      element.ll6Manager.length > 0;
+                    else temp
+                  ">
+                  {{ element.ll6Manager }}
+                </ng-container>
+                <ng-template #temp> - </ng-template>
+              </td>
+            </ng-container>
+            <ng-container *ngFor="let headersFilter of filtersVal; let i = index" [matColumnDef]="headersFilter">
+              <th mat-header-cell *matHeaderCellDef [sticky]="true">
+                <div *ngIf="i !== 4 && i !== 8 && i !== 9 && i !== 10">
+                  <input matInput [formControl]="filterControls[headersFilter]" class="input-search" />
+                </div>
+                <div *ngIf="i === 8">
+                  <input matInput [formControl]="filterControls[headersFilter]" class="input-search primary-search" />
+                </div>
+                <div *ngIf="i === 9 || i === 10">
+                  <input matInput [formControl]="filterControls[headersFilter]" class="input-search jd-search" />
+                </div>
+                <div *ngIf="i === 4" class="date-input-search input-search datepicker-container">
+                  <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                    <input matStartDate [formControl]="startFilterControl" />
+                    <input matEndDate [formControl]="endFilterControl" />
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                </div>
+              </th>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky sticky-header-row p-0 m-0"></tr>
+            <tr mat-header-row *matHeaderRowDef="filtersVal" class="sticky sticky-search-header-row p-0 m-0"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="getDetails(row)"></tr>
+            <!-- Row shown when there is no matching data. -->
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">
+                No data matching the filter <span class="font-bold"></span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <mat-paginator *ngIf="dataSource.data.length != 0" [pageSizeOptions]="[10, 20, 50, 100]"
+          aria-label="Select page of position data">
+        </mat-paginator>
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

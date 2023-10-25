@@ -1,0 +1,23 @@
+<div class="dialog-heading p-3 m-0 flex flex-row justify-between">
+  <div >
+    <h1 mat-dialog-title class="mb-0">User Manual</h1>
+    <a [href]="fileUrl" download="UserManual.pdf" class="mr-1 ml-3 flex flex-row">
+      DownloadFile
+      <mat-icon [svgIcon]="'mat_outline:file_download'"></mat-icon>
+    </a>
+  </div>
+  <div>
+    <a mat-icon-button (click)="closeDialog()" [matTooltip]="'Close'">
+      <mat-icon [svgIcon]="'heroicons_outline:x'" class="iconColor"></mat-icon>
+    </a>
+  </div>
+
+</div>
+<div mat-dialog-content>
+  <pdf-viewer [src]="fileUrl" [render-text]="true" [original-size]="true" [zoom]="zoom"
+    class="custom-dialog-content"></pdf-viewer>
+</div>
+<div mat-dialog-actions class="justify-center">
+  <mat-icon svgIcon="mat_outline:zoom_in" (click)="zoomIn()" matTooltip="zoomIn" class="icon"></mat-icon>
+  <mat-icon svgIcon="mat_outline:zoom_out" (click)="zoomOut()" matTooltip="zoomOut" class="icon"></mat-icon>
+</div>

@@ -1,0 +1,31 @@
+ ::ng-deep .no-padding {
+    padding: 0 !important;
+}
+
+::ng-deep .mat-form-field-wrapper{
+    padding-bottom: 0px;
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+
+::ng-deep .mat-select-panel{
+    min-width: calc(100% + 3px) !important;
+  }
+
+  .back-button{
+    border-radius: 100px;
+    width: 36px;
+    height: 35px;
+    padding: 3px;
+    text-align: center;
+  }
+
+  .back-button:hover{
+    background-color: #1e293b;
+    border-radius: 100px;
+    width: 36px;
+    height: 35px;
+    padding: 3px;
+    text-align: center;
+  }
+  

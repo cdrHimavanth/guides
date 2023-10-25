@@ -1,0 +1,80 @@
+<!-- <div *ngIf="dataSource && dataSource.data && dataSource.data.length === 0" class="text-center p-2"><mat-card class="m-auto w-9/12 mt-5 p-5 flex items-center justify-center bg-card" *ngIf="dataSource.data.length == 0">
+  <img class="not-found-container" src="../../../assets/images/custom/no-data-found.png" alt="No data found" />
+</mat-card> -->
+<div class="flex flex-col mt-2 flex-auto min-w-0">
+  <div
+    class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between pl-6 pr-6 sm:px-10 dark:bg-transparent">
+    <div class="flex-1 min-w-0">
+      <!-- Title -->
+      <div class="mt-2 mb-2">
+        <h2 class="font-medium tracking-tight text-secondary">
+          Attempted Positions Info
+        </h2>
+      </div>
+    </div>
+
+    <div class="max-w-full search-bar">
+      <mat-form-field class="flex justify-end full-width" appearance="outline">
+        <input [formControl]="searchControl" placeholder="Search" matInput [type]="'overallSearch'" (input)="applyFilter()" />
+      </mat-form-field>
+    </div>
+
+  </div>
+  <div class="flex-auto pb-3 pl-6 pr-6 sm:pl-10 sm:pr-10">
+    <div class="max-w-full prose prose-sm">
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <!-- Bid Name Column -->
+          <ng-container matColumnDef="bidName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              Bid Name
+            </th>
+            <td mat-cell *matCellDef="let row" class="flex justify-center border-none">
+              <!-- #enddocregion basic-panel -->
+              <mat-expansion-panel (opened)="panelOpenState = true" class="shadow-none w-250 text-left"
+                (closed)="panelOpenState = false">
+                <mat-expansion-panel-header class="dark-icon">
+                  <mat-panel-title>
+                    {{ row.bidName }}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <p *ngFor="let eachPosition of row.positionData">
+                  {{eachPosition.position}} <span [ngClass]="{
+                      'tech-reject': eachPosition.interviewResult === 'Tech Reject',
+                      'shortlisted': eachPosition.interviewResult === 'Shortlisted',
+                      'interview-cancelled ': eachPosition.interviewResult === 'Interview Cancelled',
+                      'feedback-pending': eachPosition.interviewResult === 'Feedback Pending'
+                    }" class="italic" matTooltip={{eachPosition.declinedReason}} matTooltipPosition="after"> =>
+                    {{eachPosition.interviewResult}}</span>
+                </p>
+
+
+              </mat-expansion-panel>
+            </td>
+          </ng-container>
+
+          <!-- count Of Profile Submitted Name Column -->
+          <ng-container matColumnDef="noOfPositions">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              No Of Positions
+            </th>
+            <td mat-cell *matCellDef="let row">{{ row.noOfPositions }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">
+              No data matching the filter "{{ searchControl.value }}"
+            </td>
+          </tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+      </div>
+    </div>
+  </div>
+
+</div>

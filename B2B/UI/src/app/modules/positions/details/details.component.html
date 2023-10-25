@@ -1,0 +1,452 @@
+<div class="flex flex-col flex-auto" *ngIf="positionsDetails != null">
+    <!-- Header -->
+    <mat-card class="card flex items-center justify-between">
+        <div class="flex flex-col">
+            <div class="flex flex-row">
+                <div>
+                    <p class="font-bold">Order No:</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.orderNo }}</p>
+                </div>
+            </div>
+            <div class="flex flex-row">
+
+                <div>
+                    <ng-container
+                        *ngIf="positionsDetails.ordActiveStatus !=null && positionsDetails.ordActiveStatus; else temp">
+                        <div class="flex items-center justify-center py-1 px-3 mr-3 rounded-full leading-normal text-green-500 bg-green-100 dark:text-green-300 dark:bg-green-700 ng-star-inserted"
+                            mat-flat-button>
+                            <span class="text-sm font-medium whitespace-nowrap">Open</span>
+                        </div>
+                    </ng-container>
+                    <ng-template #temp>
+                        <div class="flex items-center justify-center py-1 px-3 mr-3 rounded-full leading-normal text-red-500 bg-red-100 dark:text-red-300 dark:bg-red-700 ng-star-inserted"
+                            mat-flat-button>
+                            <span class="text-sm font-medium whitespace-nowrap">Closed</span>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center">
+            <a mat-icon-button  *ngIf="positionNos !== null" (click)="toggleEditMode() ">
+                <mat-icon *ngIf="!isEditable" matTooltip="Edit" [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
+                <mat-icon *ngIf="isEditable" matTooltip="View" [svgIcon]="'heroicons_outline:eye'"></mat-icon>
+            </a>
+            <a mat-icon-button (click)="closeDrawer()" [matTooltip]="'Close'">
+                <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+            </a>
+        </div>
+    </mat-card>
+    <form class="flex flex-col flex-auto overflow-y-auto m-3" [formGroup]="jobDetailsForm">
+        <div class="grid lg:grid-cols-2 gap-2 md:grid-cols-2 gap-2 sm:grid-cols-1">
+            <div class="flex flex-row" *ngIf="positionsDetails.positionNos !== null else nullPositions">
+                <div>
+                    <p class="font-bold">Position No:</p>
+                </div>
+                <div>
+                    <p class="detail">
+                        {{ positionsDetails.positionNos}}
+                    </p>
+                </div>
+            </div>
+            <ng-template #nullPositions>
+                <div class="flex flex-row" >
+                    <div>
+                        <p class="font-bold">Position No:</p>
+                    </div>
+                    <div>
+                        <p class="detail text-red-500">
+                            No positions found for this order.
+                        </p>
+                    </div>
+                </div>
+
+            </ng-template>
+            <div class="flex flex-row" *ngIf="positionsDetails.broadcastDate !== null">
+                <div>
+                    <p class="font-bold">Broadcast Date:</p>
+                </div>
+                <div>
+                    <p class="detail">
+                        {{ positionsDetails.broadcastDate | date : "mediumDate" }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="positionsDetails.stratification !== null">
+                <div>
+                    <p class="font-bold">Stratification:</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.stratification }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="positionsDetails.targetRate !== null">
+                <div>
+                    <p class="font-bold">Target Rate:</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.targetRate }}</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-1">
+            <div class="flex flex-row" *ngIf="positionsDetails.preferredSkills !== null">
+                <div>
+                    <p class="font-bold">Primary Skill :</p>
+                    <div>
+                        <p class="detail">{{ positionsDetails.preferredSkills }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-row" *ngIf="positionsDetails.skillRequired !== null">
+                <div>
+                    <p class="font-bold">SkillSet:</p>
+                    <div>
+                        <p class="detail">
+                            <span
+                                *ngIf=" positionsDetails.skillRequired && positionsDetails.skillRequired.length >= 0 && expandSkillset == false">
+                                {{ positionsDetails.skillRequired.substr(0, 300) }}
+                                <span style=" color: blue; text-decoration: underline; cursor: pointer;"
+                                    (click)="toggleSkillSetText()" *ngIf="positionsDetails.skillRequired.length >= 300">
+                                    {{ expandSkillset ? "Read Less" : "Read More" }}</span>
+                            </span>
+                            <span *ngIf="expandSkillset == true"> {{ positionsDetails.skillRequired }}
+                                <span style="color: blue; text-decoration: underline; cursor: pointer;"
+                                    (click)="toggleSkillSetText()">{{ expandSkillset ? "Read Less" : "Read More"
+                                    }}</span>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-row"
+                *ngIf="positionsDetails.jobDescription !== null && positionsDetails.jobDescription!= ''">
+                <div>
+                    <p class="font-bold">Job Description:</p>
+                    <div>
+                        <p class="detail">
+                            <span
+                                *ngIf=" positionsDetails.jobDescription && positionsDetails.jobDescription.length >= 0 && expandJd == false">
+                                {{ positionsDetails.jobDescription.substr(0, 300) }}
+                                <span style="
+                    color: blue;
+                    text-decoration: underline;
+                    cursor: pointer;
+                  " *ngIf="positionsDetails.jobDescription.length >= 300" (click)="toggleJDText()">
+                                    {{expandJd ? "Read Less" : "Read More" }}</span>
+                            </span>
+                            <span *ngIf="expandJd == true">
+                                {{ positionsDetails.jobDescription }}
+                                <span style="
+                    color: blue;
+                    text-decoration: underline;
+                    cursor: pointer;
+                  " (click)="toggleJDText()">{{ expandJd ? "Read Less" : "Read More" }}</span>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <br />
+        <!-- Editing disabled -->
+        <div class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1" *ngIf="!isEditable">
+            <div class="flex flex-row" *ngIf="positionsDetails.recruiter !== null">
+                <div>
+                    <p class="font-bold">Recruiter:</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.recruiter }}</p>
+                </div>
+            </div>
+            <div class="flex flex-row" *ngIf="positionsDetails.skillGroup !== null &&positionsDetails.skillGroup !== undefined && positionsDetails.skillGroup.length > 0" >
+                <div>
+                    <p class="font-bold">Skill Group:</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.skillGroup }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="positionsDetails.orderType !== null && positionsDetails.orderType!= 'Unassigned'">
+                <div>
+                    <p class="font-bold">Order Type:</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.orderType }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="positionsDetails.didCustomerReachedOut !== null">
+                <div>
+                    <p class="font-bold">Did Customer Reached Out:</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.didCustomerReachedOut? "Yes" :"No" }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="positionsDetails.probability !== null">
+                <div>
+                    <p class="font-bold">Probability:</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.probability }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="positionsDetails.submittedAboveTarget !== null">
+                <div>
+                    <p class="font-bold">Submitted Above Target:</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.submittedAboveTarget ? "Yes" :"No"}}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="(positionsDetails.regionName && positionsDetails.regionName!= 'Unassigned' && positionsDetails.regionName.length > 0 )">
+                <div>
+                    <p class="font-bold">Region :</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.regionName }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="(positionsDetails.buName && positionsDetails.buName!= 'Unassigned' && positionsDetails.buName.length > 0)">
+                <div>
+                    <p class="font-bold">Line Of Business :</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.buName }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row"
+                *ngIf="(positionsDetails.productLineName && positionsDetails.productLineName!= 'Unassigned' && positionsDetails.productLineName.length > 0)">
+                <div>
+                    <p class="font-bold">Product Line :</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.productLineName }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="(positionsDetails.ll6Manager && positionsDetails.ll6Manager!==undefined && positionsDetails.ll6Manager!= 'Unassigned' && positionsDetails.ll6Manager.length > 0)">
+                <div>
+                    <p class="font-bold">LL6 :</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.ll6Manager }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row" *ngIf="(positionsDetails.ll5Manager && positionsDetails.ll5Manager!==undefined && positionsDetails.ll5Manager!= 'Unassigned' && positionsDetails.ll5Manager.length > 0)">
+                <div>
+                    <p class="font-bold">LL5 :</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.ll5Manager }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row"
+                *ngIf="positionsDetails.ll4Manager !== null && positionsDetails.ll4Manager!==undefined && positionsDetails.ll4Manager!= 'Unassigned' &&  positionsDetails.ll4Manager.length > 0">
+                <div>
+                    <p class="font-bold">LL4 :</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.ll4Manager }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row"
+                *ngIf="positionsDetails.ll3Manager !== null && positionsDetails.ll3Manager!==undefined &&  positionsDetails.ll3Manager!= 'Unassigned' &&  positionsDetails.ll3Manager.length > 0">
+                <div>
+                    <p class="font-bold">LL3 :</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.ll3Manager }}</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row"
+                *ngIf="positionsDetails.ll2Manager !== null && positionsDetails.ll2Manager!==undefined && positionsDetails.ll2Manager!= 'Unassigned' && positionsDetails.ll2Manager.length > 0 ">
+                <div>
+                    <p class="font-bold">LL2 :</p>
+                </div>
+                <div>
+                    <p class="detail">{{ positionsDetails.ll2Manager }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editing enabled  -->
+        <div *ngIf="isEditable">
+            <div class="grid lg:grid-cols-2 gap-2 md:grid-cols-2 gap-2 sm:grid-cols-1">
+                <div class="flex flex-row">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">Recruiter</mat-label>
+                        <mat-select (selectionChange)="fetchRecruiterMail($event.value)" formControlName="recruiter"
+                            required>
+                            <mat-option *ngFor="let recruiter of recruiterList" value="{{ recruiter.givenName }}">{{
+                                recruiter.givenName }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-6 flex flex-row">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">Order Type</mat-label>
+                        <mat-select formControlName="orderType">
+                            <mat-option *ngFor="let orderType of orderTypesList"
+                                value={{orderType.masterName}}>{{orderType.masterName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-2 md:grid-cols-2 gap-2 sm:grid-cols-1">
+                <div class="flex flex-row">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">Skill Group</mat-label>
+                        <input formControlName="skillGroup" matInput type="text" required />
+                    </mat-form-field>
+                </div>
+                <!--region-->
+                <div>
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">Region</mat-label>
+                        <mat-select formControlName="regionName">
+                            <mat-option *ngFor="let region of regioncodeList" required
+                                value={{region.masterName}}>{{region.masterName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!--probability-->
+                <div class="col-6 flex flex-row">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">Probability</mat-label>
+                        <input formControlName="probability" matInput type="number" min=0 max=100 />
+                        <mat-error *ngIf="jobDetailsForm.get('probability').invalid">
+                            Range should be 0 - 100 only
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-2 md:grid-cols-2 gap-2 sm:grid-cols-1">
+                <!--didCustomerReachOut-->
+                <div class="mt-1 mb-3">
+                    <mat-label class="text-sm">Did Customer Reached Out :</mat-label>
+                    <mat-radio-group class="example-full-width flex flex-row" formControlName="didCustomerReachedOut">
+                        <mat-radio-button class="example-radio-button" value="Yes">Yes</mat-radio-button>
+                        <mat-radio-button class="example-radio-button" value="No">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <!--submittedAboveTarget-->
+                <div class="mt-1 mb-3">
+                    <mat-label class="text-sm">Submitted Above Target :</mat-label>
+                    <mat-radio-group class="example-full-width flex flex-row" formControlName="submittedAboveTarget">
+                        <mat-radio-button class="example-radio-button" value="Yes">Yes</mat-radio-button>
+                        <mat-radio-button class="example-radio-button" value="No">No</mat-radio-button>
+                    </mat-radio-group>
+
+                </div>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-2 md:grid-cols-2 gap-2 sm:grid-cols-1">
+                <div>
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">Line Of Business</mat-label>
+                        <mat-select formControlName="buName" (selectionChange)=onBuChange()>
+                            <mat-option *ngFor="let bu of businessUnitList" required
+                                value={{bu.businessUnitName}}>{{bu.businessUnitName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">Product Line</mat-label>
+                        <mat-select formControlName="productLineName">
+                            <mat-option *ngFor="let productList of productLineList"
+                                value={{productList.productLineName}}>{{productList.productLineName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">LL6</mat-label>
+                        <mat-select formControlName="ll6Manager" (selectionChange)="onDropdownChange()">
+                            <mat-option *ngFor="let manager of ll6ManagerList"
+                                value={{manager.ll6Manager}}>{{manager.ll6Manager}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="jobDetailsForm.value.manager != ''">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">LL5</mat-label>
+                        <input formControlName="ll5Manager" matInput type="text" readonly/>
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="jobDetailsForm.value.manager != ''">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">LL4</mat-label>
+                        <input formControlName="ll4Manager" matInput type="text" readonly/>
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="jobDetailsForm.value.manager != ''">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">LL3</mat-label>
+                        <input formControlName="ll3Manager" matInput type="text" readonly/>
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="jobDetailsForm.value.manager != ''">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label class="text-sm">LL2</mat-label>
+                        <input formControlName="ll2Manager" matInput type="text" readonly />
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+
+
+            <div class="button-wrapper flex flex-row justify-end">
+                <button class="m-3" mat-stroked-button (click)="cancelChanges()">
+                    <span class="ml-2 mr-1">Cancel</span>
+                </button>
+                <button class="text-white bg-[#1e293b] m-3" mat-flat-button [disabled]="jobDetailsForm.invalid"
+                    (click)="submitDetails()">
+                    <span class="ml-2 mr-1">Save</span>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+
+    <div class="file-input-container p-4 flex-row" *ngIf="!isEditable">
+        <h1 class="upload-position-title mb-3">Upload Position</h1>
+        <label class="custom-file-input mr-3">
+            Choose File
+            <input type="file" (change)="onFileSelected($event)" accept=".pdf">
+        </label>
+        <span *ngIf="selectedFileName" class = "mr-2">
+            Selected File: {{ selectedFileName }}
+        </span>
+        <button (click)="uploadFile(positionsDetails.orderNo)"
+            class="text-white bg-[#1e293b] hover:bg-gray-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Upload
+        </button>
+        <p class="text-red-500">{{pdfErrorMsg}}</p>
+    </div>
+</div>

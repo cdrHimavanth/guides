@@ -1,0 +1,70 @@
+<div class="p-3">
+  <!-- header  -->
+  <mat-card class="card flex items-center justify-between w-full">
+    <h1 class="font-bold">Add Manager</h1>
+    <div class="flex">
+      <!-- Cancel button -->
+      <a
+        class="ml-2"
+        mat-icon-button
+        (click)="closeDrawer()"
+        matTooltip="Cancel"
+      >
+        <mat-icon [svgIcon]="'heroicons_outline:x'" ></mat-icon>
+      </a>
+    </div>
+  </mat-card>
+
+  <form [formGroup]="addManagerDetailsForm">
+    <div class="grid grid-cols-2 gap-2 pt-2">
+
+      <mat-form-field  appearance="outline">
+        <mat-label>LL6 Manager</mat-label>
+        <input  type="text" matInput formControlName="ll6Manager" placeholder="Enter LL6 name" />
+            
+      </mat-form-field>
+
+        <!-- <mat-form-field  appearance="outline">
+            <mat-label>LL5 Manager</mat-label>
+            <input  type="text" matInput formControlName="ll5Manager" placeholder="Enter LL5 name" />
+                
+        </mat-form-field> -->
+        <mat-form-field class="example-full-width" appearance="outline">
+          <mat-select (selectionChange)="onLl5ManagerChange()" formControlName="ll5Manager" required>
+            <mat-option *ngFor="let ll5Manager of   ll5ManagerList" value="{{ll5Manager.ll5Manager }}">{{ll5Manager.ll5Manager }}</mat-option>
+            <form [formGroup]="newOption" class="p-5" (submit)="addNewll5()">
+                <input formControlName="newOptionValue" placeholder="Add New">
+                <button type="submit" >Add</button>
+            </form>
+          </mat-select>
+      </mat-form-field>
+
+        <mat-form-field  appearance="outline">
+          <mat-label>LL4 Manager</mat-label>
+          <input  type="text" matInput formControlName="ll4Manager" placeholder="Enter LL4 name" />
+              
+        </mat-form-field>
+
+        <mat-form-field  appearance="outline">
+          <mat-label>LL3 Manager</mat-label>
+          <input  type="text" matInput formControlName="ll3Manager" placeholder="Enter LL3 name" />
+              
+        </mat-form-field>
+
+        <mat-form-field  appearance="outline">
+          <mat-label>LL2 Manager</mat-label>
+          <input  type="text" matInput formControlName="ll2Manager" placeholder="Enter LL2 name" />
+              
+        </mat-form-field>
+
+    </div>
+    <div class="flex flex-row justify-end items-center">
+        <button class="m-3" mat-stroked-button (click)="closeDrawer()">
+    <span class="ml-2 mr-1">Cancel</span>
+  </button>
+        <button  (click)="AddManager()" type="submit" class="text-white bg-[#1e293b] mr-2" mat-flat-button color="success">
+    <span class="ml-2 mr-1">Save</span>
+  </button>
+    </div>
+</form>
+</div>

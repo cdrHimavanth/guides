@@ -1,0 +1,296 @@
+<br>
+
+<mat-tab-group (selectedTabChange)="onTabChange($event)">
+
+	<mat-tab label="Excel">
+		<div class="excel-upload p-5" *ngIf="!isExcelUploaded">
+			<div class="flex flex-row justify-between">
+				<div>
+					<h1 class="font-medium tracking-tight text-secondary ml-7">Upload Excel Files </h1>
+				</div>
+			</div>
+			<div class="upload-container mt-2 bg-card" appDnd (fileDropped)="onFileDroppedExcel($event)"
+				*ngIf="!disableExcelDndDiv">
+				<div class="flex flex-col items-center ">
+					<div class="text-center">
+						<input class="input1" type="file" #fileDropRef style="cursor: pointer;" id="fileDropRef"
+							multiple (change)="fileBrowseHandlerExcel($event.target.files)" accept=".xls,.xlsx,.xlsm" />
+						<mat-icon class="upload-icon" svgIcon="heroicons_outline:upload"></mat-icon>
+					</div>
+					<div class="mt-2 font-medium tracking-tight text-secondary">
+						<h3 class="h3">Drag and drop Excel file here</h3>
+					</div>
+					<div class="mt-2 text-base">
+						<h3 class="h3">or</h3>
+					</div>
+					<div class="mt-2">
+						<label class="label1" for="fileDropRef">Browse for file</label>
+					</div>
+					<div class="mt-2">
+						<p class="font-medium tracking-tight text-secondary">
+							*Note: Please upload only excel file with .xlsx / .xlsm/ .xls extension
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="m-3">
+				<fuse-alert class="mt-8 -mb-4 w-full " *ngIf="showAlertExcel" [appearance]="'outline'"
+					[showIcon]="false" [type]="alert.type" [dismissible]="true" [dismissed]="false">
+					{{alert.message}}
+				</fuse-alert>
+			</div>
+			<div class="files-list">
+				<div class="single-file" *ngFor="let file of filesList; let i = index">
+					<div class="file-icon">
+						<mat-icon class="doc-icon" svgIcon="heroicons_outline:document-text"></mat-icon>
+					</div>
+					<div class="info">
+						<h4 class="name"> {{ file?.name }} </h4>
+						<p class="size"> {{ formatBytes(file?.size) }} </p>
+						<p class="error-msg">{{file?.errMsg}}</p>
+					</div>
+					<div class="delete" (click)="deleteFileExcel(i)">
+						<mat-icon class="delete-icon" svgIcon="heroicons_outline:trash"></mat-icon>
+					</div>
+
+				</div>
+			</div>
+			<div class="flex flex-row justify-center p-6">
+
+				<button class="m-3 reset-button border" mat-stroked-button (click)="reset()"
+					[disabled]="filesList.length==0">
+					<span class="ml-2 mr-1">Reset</span>
+				</button>
+
+				<button class="m-3 button" mat-flat-button [progress]=0 (click)="excelUpload()"
+					[disabled]="filesList.length==0 || configErr">
+					<span class="ml-2 mr-1">Upload</span>
+				</button>
+			</div>
+		</div>
+		<div *ngIf="isExcelUploaded && isExcelUploadFailed">
+			<br>
+			<table *ngIf="dataSource != null && dataSource.data.length!=0" class="table" mat-table matSort
+				[dataSource]="dataSource" aria-label="uploaded Files Table">
+				<!-- FileName -->
+				<ng-container matColumnDef="fileName">
+					<th class="table-header" mat-header-cell *matHeaderCellDef mat-sort-header>File Name </th>
+					<td mat-cell *matCellDef="let element">
+						<ng-container *ngIf="element.fileName != null else temp"> {{ element.fileName }} </ng-container>
+						<ng-template #temp> - </ng-template>
+					</td>
+				</ng-container>
+				<!-- Status -->
+				<ng-container matColumnDef="status">
+					<th class="table-header" mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+					<td mat-cell *matCellDef="let element">
+						<ng-container *ngIf="element.status != null else temp"> {{element.status}} </ng-container>
+						<ng-template #temp>
+							-
+						</ng-template>
+
+					</td>
+				</ng-container>
+				<!-- Icon -->
+				<ng-container matColumnDef="icon">
+					<th class="table-header" mat-header-cell *matHeaderCellDef mat-sort-header></th>
+					<td mat-cell *matCellDef="let element">
+						<ng-container *ngIf="element.status === 'Uploaded' else temp">
+							<mat-icon [matTooltip]="'Uploaded'" matTooltipPosition="left"
+								svgIcon="heroicons_solid:check-circle" class="text-green-500"></mat-icon>
+						</ng-container>
+						<ng-template #temp>
+							<mat-icon [matTooltip]="'Rejected'" svgIcon="heroicons_solid:x-circle"
+								matTooltipPosition="left" class="text-red-500"></mat-icon>
+						</ng-template>
+					</td>
+				</ng-container>
+				<tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky top-0"></tr>
+				<tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+			</table>
+			<div class="flex flex-col items-center" *ngIf="dataSource.data.length!=0">
+				<button class="m-3 button" mat-flat-button (click)="backToUpload()">
+					<span class="ml-2 mr-1">Back to Upload</span>
+				</button>
+			</div>
+		</div>
+	</mat-tab>
+	<!------------------------------------------Order PDF Upload----------------------------------------------------------------->
+	<mat-tab label="Pdf">
+		<app-position-pdf-upload [ordersData]="ordersData"></app-position-pdf-upload>
+	</mat-tab>
+</mat-tab-group>
+
+
+
+
+
+<br>
+<!-- <mat-tab-group (selectedTabChange)="onTabChange($event)"> --
+<mat-tab-group>
+	<mat-tab label="Excel"> 
+		<div class="excel-upload p-5" id="excelBlock" *ngIf="!isExcelUploaded">
+			<div class="flex flex-row justify-between">
+				<div>
+					<h1 class="font-medium tracking-tight text-secondary ml-7">Upload Open Position Excel </h1>
+				</div>
+			</div>
+
+			<div class="upload-container mt-2 bg-card" appDnd (fileDropped)="onFileDroppedExcel($event)"
+				*ngIf="!disableExcelDndDiv">
+				<div class="flex flex-col items-center ">
+					<div class="text-center">
+						<input type="file" #fileDropRef id="fileDropRef" class="input1"
+							(change)="fileBrowseHandlerExcel($event.target.files)" accept=".xls,.xlsx,.xlsm" />
+						<mat-icon class="upload-icon" svgIcon="heroicons_outline:upload"></mat-icon>
+					</div>
+					<div class="mt-2 font-medium tracking-tight text-secondary">
+						<h3 class="h3">Drag and drop Excel file here</h3>
+					</div>
+					<div class="mt-2 text-base">
+						<h3 class="h3">or</h3>
+					</div>
+					<div class="mt-2">
+						<label class="label1" for="fileDropRef">Browse for file</label>
+					</div>
+					<div class="mt-2">
+						<p class="font-medium tracking-tight text-secondary">*Note: Please upload only excel file with
+							.xlsx or
+							.xls or .xlsm extension</p>
+					</div>
+				</div>
+			</div>
+			<div class="m-3">
+				<fuse-alert class=" mr-5 ml-5 w-6/6 text-center" *ngIf="showAlertExcel" [appearance]="'outline'"
+					[dismissible]="true" [dismissed]="false" [showIcon]="false" [type]="alert.type">
+					{{alert.message}}
+				</fuse-alert>
+			</div>
+
+			<div class="files-list">
+				<div class="single-file" *ngFor="let file of files; let i = index">
+					<div class="file-icon">
+						<mat-icon class="doc-icon" svgIcon="heroicons_outline:document-text"></mat-icon>
+					</div>
+					<div class="info">
+						<h4 class="name">{{ file?.name }}</h4>
+						<p class="size">{{ formatBytes(file?.size) }}</p>
+						<p class="error-msg">{{file?.errMsg}}</p>
+					</div>
+					<div class="delete" (click)="deleteFileExcel(i)">
+						<mat-icon class="delete-icon" svgIcon="heroicons_outline:trash"></mat-icon>
+					</div>
+				</div>
+			</div>
+			<div class="flex flex-row justify-center p-6">
+
+				<button class="m-3 reset-button" mat-stroked-button (click)="reset()"
+					[disabled]="files.length==0">
+					<span class="ml-2 mr-1">Reset</span>
+				</button>
+
+				<button class="m-3 button" mat-flat-button (click)="excelUpload()"
+					[disabled]="files.length==0 || configErr">
+					<span class="ml-2 mr-1">Upload</span>
+				</button>
+			</div>
+		</div> 
+		<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		
+		<div *ngIf="isExcelUploaded && !isAcceptClicked && !fileStatusTable" class="m-3">
+
+			<table class="table" *ngIf="dataSource.data.length!=0" mat-table matSort [dataSource]="dataSource"
+				aria-label="Closed and Open orders data">
+				<!-- FileName --
+				<ng-container matColumnDef="orders">
+					<th class="tableHeader" mat-header-cell *matHeaderCellDef mat-sort-header>Orders </th>
+					<td mat-cell *matCellDef="let element">
+						<ng-container *ngIf="element.orders.length != 0 else temp">
+							({{element.totalCount}}) {{ element.orders }}
+						</ng-container>
+						<ng-template #temp>
+							-
+						</ng-template>
+					</td>
+				</ng-container>
+				<!-- Status --
+				<ng-container matColumnDef="orderNo">
+					<th class="tableHeader" mat-header-cell *matHeaderCellDef mat-sort-header> Order No </th>
+					<td mat-cell *matCellDef="let element">
+						<ng-container *ngIf="element?.orderNo?.length !== 0; else temp">
+							{{ element.orderNo }}
+						</ng-container>
+						<ng-template #temp>
+							-
+						</ng-template>
+					</td>
+				</ng-container>
+				<tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky top-0"></tr>
+				<tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+			</table>
+			<div class="flex flex-row justify-center " *ngIf="!isAcceptClicked && dataSource.data.length!=0">
+				<div>
+					<button class="m-3 reset-button" mat-stroked-button (click)="reset()">
+						<span class="ml-2 mr-1">Reject</span>
+					</button>
+				</div>
+				<div>
+					<button class="m-3 button" mat-flat-button (click)="accept()">
+						<span class="ml-2 mr-1">Accept</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	
+		<div class="flex flex-col items-center" *ngIf="fileStatusTable ">
+			<table class="table" *ngIf="fileDataSource.data.length!=0" mat-table matSort [dataSource]="fileDataSource"
+				aria-label="Uploaded PDF Data">
+				<!-- FileName --
+				<ng-container matColumnDef="fileName">
+					<th class="tableHeader" mat-header-cell *matHeaderCellDef mat-sort-header>File Name </th>
+					<td mat-cell *matCellDef="let element">
+						<ng-container *ngIf="element.fileName != null else temp">
+							{{ element.fileName }}
+						</ng-container>
+						<ng-template #temp>
+							-
+						</ng-template>
+					</td>
+				</ng-container>
+				<!-- Status --
+				<ng-container matColumnDef="status">
+					<th class="tableHeader" mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+					<td mat-cell *matCellDef="let element">
+						<ng-container *ngIf="element.status != null else temp"> {{element.status}} </ng-container>
+						<ng-template #temp>
+							-
+						</ng-template>
+					</td>
+				</ng-container>
+				<!-- Icon --
+				<ng-container matColumnDef="icon">
+					<th class="tableHeader" mat-header-cell *matHeaderCellDef mat-sort-header></th>
+					<td mat-cell *matCellDef="let element">
+						<ng-container *ngIf="element.icon === 'Uploaded' else temp">
+							<mat-icon [matTooltip]="'Uploaded'" matTooltipPosition="left"
+								svgIcon="heroicons_solid:check-circle" class="text-green-500"></mat-icon>
+						</ng-container>
+						<ng-template #temp>
+							<mat-icon [matTooltip]="'Rejected'" svgIcon="heroicons_solid:x-circle"
+								matTooltipPosition="left" class="text-red-500"></mat-icon>
+						</ng-template>
+					</td>
+				</ng-container>
+				<tr mat-header-row *matHeaderRowDef="displayedColumns1" class="sticky top-0"></tr>
+				<tr mat-row *matRowDef="let row; columns: displayedColumns1; "></tr>
+			</table>
+			<button class="m-3 button" mat-flat-button (click)="backToUpload()">
+				<span class="ml-2 mr-1">Back to Upload</span>
+			</button>
+		</div>
+	<!-- </mat-tab>
+	<!------------------------------------------Order PDF Upload----------------------------------------------------------------->
+<!-- <mat-tab label="Pdf"> 
+		<app-position-pdf-upload [ordersData]="ordersData"></app-position-pdf-upload> 
+	</mat-tab> --
+</mat-tab-group> -->

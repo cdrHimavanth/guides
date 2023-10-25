@@ -1,0 +1,96 @@
+<div class="p-3">
+  <!-- header  -->
+  <mat-card class="card flex items-center justify-between w-full">
+    <div class="font-bold text-lg flex flex-col items-start">
+      <p>Edit Manager</p>
+    </div>
+    <div class="flex">
+      <a class="ml-2" mat-icon-button (click)="changeDisplayMode()">
+        <mat-icon *ngIf="!isEditable" matTooltip="Edit" [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
+        <mat-icon *ngIf="isEditable" matTooltip="View" [svgIcon]="'heroicons_outline:eye'"></mat-icon>
+      </a>
+      <!-- Cancel button -->
+      <a class="ml-2" mat-icon-button (click)="closeDrawer()" matTooltip="Cancel">
+        <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+      </a>
+    </div>
+  </mat-card>
+  <form [formGroup]="managerEditDetailsForm">
+    <div class="grid grid-cols-2 gap-2 pt-2">
+
+      <div class="flex" *ngIf="!isEditable">
+        <p class="font-bold">LL6 Manager :</p>
+        <p class="pl-2">{{ managerEditDetails?.ll6Manager}}</p>
+      </div>
+      <div class="flex" *ngIf="!isEditable">
+        <p class="font-bold">LL5 Manager :</p>
+        <p class="pl-2">{{ managerEditDetails?.ll5Manager }}</p>
+      </div>
+      <div class="flex" *ngIf="!isEditable">
+        <p class="font-bold">LL4 Manager :</p>
+        <p class="pl-2">{{ managerEditDetails?.ll4Manager }}</p>
+      </div>
+      <div class="flex" *ngIf="!isEditable">
+        <p class="font-bold">LL3 Manager :</p>
+        <p class="pl-2">{{ managerEditDetails?.ll3Manager }}</p>
+      </div>
+      <div class="flex" *ngIf="!isEditable">
+        <p class="font-bold">LL2 Manager :</p>
+        <p class="pl-2">{{ managerEditDetails?.ll2Manager }}</p>
+      </div>
+
+
+      <mat-form-field (click)="getExistingLL6()" *ngIf="isEditable" appearance="outline">
+        <mat-label>LL6 Manager</mat-label>
+        <input type="text" matInput formControlName="ll6Manager" placeholder="Enter LL6 name" />
+      </mat-form-field>
+
+      <mat-form-field *ngIf="isEditable" appearance="outline">
+        <mat-label>LL5 Manager</mat-label>
+        <mat-select [(value)]="managerEditDetailsForm.value.ll5Manager">
+          <mat-option *ngFor="let manager of ll5Managers" [value]="manager">
+            {{ manager }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+
+      <mat-form-field *ngIf="isEditable" appearance="outline">
+        <mat-label>LL4 Manager</mat-label>
+        <mat-select [(value)]="managerEditDetailsForm.value.ll4Manager">
+          <mat-option *ngFor="let manager of ll4Managers" [value]="manager">
+            {{ manager }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="isEditable" appearance="outline">
+        <mat-label>LL3 Manager</mat-label>
+        <mat-select [(value)]="managerEditDetailsForm.value.ll3Manager">
+          <mat-option *ngFor="let manager of ll3Managers" [value]="manager">
+            {{ manager }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="isEditable" appearance="outline">
+        <mat-label>LL2 Manager</mat-label>
+        <mat-select [(value)]="managerEditDetailsForm.value.ll2Manager">
+          <mat-option *ngFor="let manager of ll2Managers" [value]="manager">
+            {{ manager }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+    <div *ngIf="isEditable" class="flex flex-row justify-end items-center">
+      <button class="m-3" mat-stroked-button (click)="changeDisplayMode()">
+        <span class="ml-2 mr-1">Cancel</span>
+      </button>
+      <button *ngIf="isEditable" (click)="saveEditManagerDetails()" type="submit" class="text-white bg-[#1e293b] mr-2"
+        mat-flat-button color="success">
+        <span class="ml-2 mr-1">Save</span>
+      </button>
+    </div>
+  </form>
+</div>

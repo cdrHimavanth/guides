@@ -1,0 +1,67 @@
+<div class="p-3">
+  <!-- header  -->
+  <mat-card class="card flex items-center justify-between w-full">
+    <div class="font-bold text-lg flex flex-col items-start">
+      <p>{{businessUnitName}} </p>
+    </div>
+    <div class="flex">
+      <a class="ml-2" mat-icon-button (click)="addProductLine()">
+        <mat-icon
+          matTooltip="add"
+          [svgIcon]="'heroicons_outline:plus'"
+        ></mat-icon>
+      </a>
+      <!-- Cancel button -->
+      <a
+        class="ml-2"
+        mat-icon-button
+        (click)="closeDrawer()"
+        matTooltip="Cancel" 
+      >
+        <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon> 
+      </a>
+    </div>
+  </mat-card>
+  <form [formGroup]="editBusinessUnitDetailsForm">
+    <div class="pt-2">
+
+      <div >
+        <table *ngIf="editBusinessUnitDetailsForm.value.productLinesList" class="w-full mat-elevation-z8 mt-2 mb-2" aria-describedby="productLineTable" mat-table [dataSource]="dataSource">
+
+            <ng-container matColumnDef="productLineName">
+
+                <th class="text-black text-base" mat-header-cell *matHeaderCellDef> Product Line </th>
+                <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                    <mat-form-field [appearance]="editBusinessUnitDetailsForm.get('productLinesList').value[i].isEditable? 'none' : 'legacy'">
+                        <input matInput type="text" formControlName="productLineName" [readonly]="editBusinessUnitDetailsForm.get('productLinesList').value[i].isEditable">
+                    </mat-form-field>
+
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action">
+                <th class="text-black text-base" mat-header-cell *matHeaderCellDef> Action </th>
+                <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+
+                    <button (click)=" editBUDetails(editBusinessUnitDetailsForm,i)" mat-icon-button class="material-icons app-toolbar-menu save-button" *ngIf="editBusinessUnitDetailsForm.get('productLinesList').value[i].isEditable  " matTooltip="Edit" color="primary">
+                            <mat-icon>edit</mat-icon>
+                    </button>
+
+                    <button (click)="saveBusinessUnitDetails(editBusinessUnitDetailsForm,i)" mat-icon-button class="material-icons app-toolbar-menu save-button" matTooltip="Save Changes" *ngIf="!editBusinessUnitDetailsForm.get('productLinesList').value[i].isEditable" color="primary">
+                        <mat-icon>check_circle</mat-icon>
+                    </button>
+
+                    <button (click)="removerow(editBusinessUnitDetailsForm,i)" mat-icon-button class="material-icons app-toolbar-menu save-button" matTooltip="remove" *ngIf="performingAction == 'adding' && editBusinessUnitDetailsForm.get('productLinesList').value[i].productLineName=='' " color="primary">
+                      <mat-icon svgIcon="heroicons_outline:trash"></mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+    </div>
+
+    </div>
+</form>
+</div>

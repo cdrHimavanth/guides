@@ -1,0 +1,55 @@
+.master-options{
+    font-size: medium;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-top: 6px;
+    text-align: center;
+    padding: 5px;
+}
+.master-options:hover{
+    background-color: rgb(226, 245, 245);
+    border-radius: 5px ;
+    
+}
+
+.child-styling{
+    width: 100%;
+    height: 100%;
+}
+
+.option-container {
+    display: flex;
+    align-items: center;
+    
+}
+
+.option-container i {
+    margin: 8px;
+    margin-right: 5px;
+  }
+
+  .option-text {
+    margin-left: 8px; /* Adjust the margin as needed */
+  }
+// .option-text-hover{
+//     background-color: aqua;
+// }
+
+.back-button{
+  border-radius: 100px;
+  width: 36px;
+  height: 35px;
+  padding: 3px;
+  text-align: center;
+}
+
+.back-button:hover{
+  background-color: #1e293b;
+  border-radius: 100px;
+  width: 36px;
+  height: 35px;
+  padding: 3px;
+  text-align: center;
+}

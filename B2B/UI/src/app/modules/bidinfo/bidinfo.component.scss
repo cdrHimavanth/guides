@@ -1,0 +1,97 @@
+.mat-header-cell {
+    color: white !important;
+    font-size: 13px;
+    background-color: #1e293b;
+    position: sticky;
+    top: 0;
+    min-width: 100px;
+    max-width: 200px;
+    text-align: center !important;
+    padding: 5px;
+}
+
+tr {
+    cursor: pointer;
+}
+
+.mat-column-declinedReason {
+    min-width: 200px !important;
+}
+
+.mat-cell {
+    text-align: center !important;
+    min-width: 100px;
+    max-width: 200px;
+}
+
+.mat-cell,
+.mat-footer-cell {
+    font-size: 13px;
+    padding: 5px;
+}
+
+.not-found-container {
+    width: 50%;
+}
+
+.container {
+    max-height: 60vh;
+    overflow: auto;
+}
+
+::ng-deep .mat-sort-header-container {
+    display: flex;
+    justify-content: center;
+}
+.input-search {
+    background-color: white;
+    color: black;
+    height: 30px;
+    border-radius: 6px;
+    width: 90px;
+    margin-top: 5px;
+    font-weight: 400;
+}
+.date-input-search {
+    width: 150px;
+}
+.datepicker-container {
+    display: flex;
+    align-items: center;
+}
+.heading-span {
+    max-height: 20px;
+    width: 200px
+}
+th.mat-header-cell {
+    border-bottom-width: 0px !important;
+    border-top-width: 0px !important;
+
+}
+
+.sticky-header-row {
+    top: 0;
+    z-index: 2;
+}
+
+.sticky-search-header-row {
+    top: 56px;
+    z-index: 1;
+}
+
+.back-button{
+    border-radius: 100px;
+    width: 36px;
+    height: 35px;
+    padding: 3px;
+    text-align: center;
+  }
+  
+  .back-button:hover{
+    background-color: #1e293b;
+    border-radius: 100px;
+    width: 36px;
+    height: 35px;
+    padding: 3px;
+    text-align: center;
+  }

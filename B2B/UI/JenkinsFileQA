@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+    environment {
+        registry = 'my-registry'
+        tag = 'latest'
+        newContainerName = "b2b-frontend-container-QA-Test${BUILD_NUMBER}"
+        previousBuildNumber = "${BUILD_NUMBER.toInteger() - 1}"
+        oldContainerName = "b2b-frontend-container-QA-Test${previousBuildNumber}"
+    }
+    stages {
+        stage('SCM Checkout') {
+            steps {
+                bat 'git checkout dev-v3'
+                bat 'git pull'
+            }
+        }
+        stage('Build') {
+            steps {
+                bat 'npm install --force'
+                bat 'ng build --configuration=qa'
+            }
+        }
+        stage('Stop Container') {
+            steps {
+                script {
+                    try {
+                        bat "docker stop ${oldContainerName}"
+                        bat "docker rm ${oldContainerName}"
+                        bat 'docker rmi b2b-frontend-image-qa'
+                    } catch (Exception e) {
+                    // Ignore errors if the container is not running or already removed
+                    }
+                }
+            }
+        }
+        stage('Dockerize') {
+            steps {
+                bat 'docker build -t b2b-frontend-image-qa -f DockerFileQA .'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                bat "docker run -d -p 4204:8084 --name ${newContainerName} b2b-frontend-image-qa"
+            }
+        }
+
+    }
+}

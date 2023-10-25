@@ -1,0 +1,29 @@
+table {
+  width: 100%;
+}
+
+th {
+  color: white !important;
+  font-size: 13px;
+  background-color: #1e293b;
+  padding: 10px;
+}
+.not-found-container {
+  width: 50%;
+}
+ 
+
+::ng-deep .mat-focused {
+  border-color: #1e293b;
+}
+
+::ng-deep .search-bar{
+  margin-top: -65px;
+  margin-right: 170px;
+ }
+
+ .container {
+  max-height: 60vh;
+  overflow: auto;
+  margin: 0;
+}

@@ -1,0 +1,92 @@
+.jobs-icon {
+    transform: scale(1.5);
+    margin: 15px;
+}
+
+@media (min-width: 512px) {
+    .jobs-icon {
+        transform: scale(2);
+    }
+}
+
+.custom-chart {
+    font-weight: 500;
+}
+
+.scroll-container {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid black;
+    background-color: #1e293b;
+}
+
+.scroll-content {
+    white-space: nowrap;
+    position: relative;
+    animation: scroll-marquee 18s cubic-bezier(1, 1, 1, 0) infinite;
+    animation-delay: -22s;
+    color: #ffffff;
+    font-size: larger;
+}
+
+@keyframes scroll-marquee {
+    0% {
+        left: 100%;
+    }
+    100% {
+        left: -100%;
+    }
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.legend-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+}
+
+.legend-label {
+  font-size: 12px;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.custom-card {
+  margin: auto;
+}
+
+td{
+  cursor: pointer;
+}
+
+.back-button{
+  background-color: #1e293b;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 100px;
+  width: 39px;
+  text-align: center;
+}
+

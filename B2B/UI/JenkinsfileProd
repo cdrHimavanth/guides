@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+     environment {
+        registry = "my-registry"
+        tag = "latest"
+        newContainerName = "b2b-frontend-container-${BUILD_NUMBER}"
+        previousBuildNumber = "${BUILD_NUMBER.toInteger() - 1}"
+        oldContainerName = "b2b-frontend-container-${previousBuildNumber}"
+    }
+    stages {
+        stage('SCM Checkout'){
+            steps {
+                bat 'git checkout prod'
+                bat 'git pull'
+            }
+        }
+        stage('Build') {
+            steps {
+                bat 'npm install --force'
+                bat 'ng build --configuration=prod'
+            }
+        }
+         stage('Stop Container') {
+            steps {
+                script {
+                    try {
+                        bat "docker stop ${oldContainerName}"
+                        bat "docker rm ${oldContainerName}"
+                        bat 'docker rmi b2b-frontend-image'
+                    } catch (Exception e) {
+                        // Ignore errors if the container is not running or already removed
+                    }
+                }
+            }
+        }
+        stage('Dockerize') {
+            steps {
+                bat 'docker build -t b2b-frontend-image -f DockerfileProd .'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                bat "docker run -d -p 4202:8082 --name ${newContainerName} b2b-frontend-image"
+            }
+        }
+    }
+}
